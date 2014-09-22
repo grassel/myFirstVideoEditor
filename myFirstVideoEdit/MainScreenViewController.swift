@@ -161,10 +161,34 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
             })
     }
   
+    /* 
+(void)exportDidFinish:(AVAssetExportSession*)session {
+if (session.status == AVAssetExportSessionStatusCompleted) {
+NSURL *outputURL = session.outputURL;
+ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputURL]) {
+[library writeVideoAtPathToSavedPhotosAlbum:outputURL completionBlock:^(NSURL *assetURL, NSError *error){
+dispatch_async(dispatch_get_main_queue(), ^{
+if (error) {
+UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Video Saving Failed"
+delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+[alert show];
+} else {
+UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Video Saved" message:@"Saved To Photo Album"
+delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+[alert show];
+}
+});
+}];
+}
+}
+}
+*/
+    
     func applicationDocumentsDirectory() -> String {
-        
+
         var documentsDirectory : String?
-        var paths:[AnyObject] = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.PicturesDirectory, NSSearchPathDomainMask.UserDomainMask, true);
+        var paths:[AnyObject] = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true);
         
         if paths.count > 0 {
             if let pathString = paths[0] as? NSString {
