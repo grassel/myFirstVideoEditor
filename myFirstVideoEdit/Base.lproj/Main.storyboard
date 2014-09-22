@@ -40,6 +40,12 @@
                                             <action selector="addVideoSelected:" destination="dSY-ef-eQv" id="z7g-my-l4U"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="xqF-fx-1OB"/>
+                                    <barButtonItem title="export" id="4AS-uF-I9r">
+                                        <connections>
+                                            <action selector="exportMovieSelected:" destination="dSY-ef-eQv" id="tCo-6V-bDz"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CQF-Ri-apH">

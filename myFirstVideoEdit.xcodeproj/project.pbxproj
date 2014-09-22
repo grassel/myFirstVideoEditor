@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C585C32C19D089D500DEF038 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C585C32B19D089D500DEF038 /* CoreMedia.framework */; };
 		C66C1BBA19D0471E00847669 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BB919D0471E00847669 /* AppDelegate.swift */; };
 		C66C1BBC19D0471E00847669 /* MainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BBB19D0471E00847669 /* MainScreenViewController.swift */; };
 		C66C1BBF19D0471E00847669 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C66C1BBD19D0471E00847669 /* Main.storyboard */; };
@@ -15,7 +16,6 @@
 		C66C1BD019D0471E00847669 /* myFirstVideoEditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BCF19D0471E00847669 /* myFirstVideoEditTests.swift */; };
 		C66C1BDA19D049F600847669 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C1BD919D049F600847669 /* AVFoundation.framework */; };
 		C66C1BDC19D04A1300847669 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C1BDB19D04A1300847669 /* UIKit.framework */; };
-		C66C1BE019D06A1C00847669 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C1BDF19D06A1C00847669 /* MediaPlayer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C585C32B19D089D500DEF038 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		C66C1BB419D0471E00847669 /* myFirstVideoEdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myFirstVideoEdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C66C1BB819D0471E00847669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C66C1BB919D0471E00847669 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -49,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C66C1BE019D06A1C00847669 /* MediaPlayer.framework in Frameworks */,
+				C585C32C19D089D500DEF038 /* CoreMedia.framework in Frameworks */,
 				C66C1BDC19D04A1300847669 /* UIKit.framework in Frameworks */,
 				C66C1BDA19D049F600847669 /* AVFoundation.framework in Frameworks */,
 			);
@@ -68,6 +69,7 @@
 		C66C1BAB19D0471E00847669 = {
 			isa = PBXGroup;
 			children = (
+				C585C32B19D089D500DEF038 /* CoreMedia.framework */,
 				C66C1BDF19D06A1C00847669 /* MediaPlayer.framework */,
 				C66C1BDB19D04A1300847669 /* UIKit.framework */,
 				C66C1BD919D049F600847669 /* AVFoundation.framework */,
@@ -422,6 +424,7 @@
 				C66C1BD519D0471E00847669 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C66C1BD619D0471E00847669 /* Build configuration list for PBXNativeTarget "myFirstVideoEditTests" */ = {
 			isa = XCConfigurationList;
@@ -430,6 +433,7 @@
 				C66C1BD819D0471E00847669 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
