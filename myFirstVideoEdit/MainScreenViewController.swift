@@ -164,7 +164,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
     func applicationDocumentsDirectory() -> String {
         
         var documentsDirectory : String?
-        var paths:[AnyObject] = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true);
+        var paths:[AnyObject] = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.PicturesDirectory, NSSearchPathDomainMask.UserDomainMask, true);
         
         if paths.count > 0 {
             if let pathString = paths[0] as? NSString {
