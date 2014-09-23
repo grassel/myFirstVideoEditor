@@ -174,31 +174,23 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
                 videoCompositionInstruction.layerInstructions = [ videoLayerInstruction ]
                 compositionVideo.instructions.append(videoCompositionInstruction)
                 
+                println ("video starts at \(CMTimeGetSeconds(insertTime))");
                 insertTime = CMTimeAdd(insertTime, sourceAsset.duration)
             }
         }
         
-        // Quarz animation / tilt transformaiton
-        var caParentLayer : CALayer = CALayer();
-        caParentLayer.frame =  CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-        
-        // Quarz animation / tilt transformaiton
-        var caVideoTiltLayer : CALayer = CALayer();
-        caVideoTiltLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-        caParentLayer.addSublayer(caVideoTiltLayer)  // chain the transformations in this way
-        
-        var identityTransform : CATransform3D  = CATransform3DIdentity;
-        identityTransform.m34 = 1.0 / 1000; // greater the denominator lesser will be the transformation
-        caVideoTiltLayer.transform = CATransform3DRotate(identityTransform, 3.14159/6.0, 1.0, 0.0, 0.0);
-        
+        // Quarz animation parent Layer
+        var caRootLayer : CALayer = CALayer();
+        let layerRec = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
+        caRootLayer.frame = layerRec;
+        var caParentLayer = caRootLayer;
         
         // Quarz animation / fade-in transformation
         var caVideoFadeInLayer : CALayer = CALayer();
-        caVideoFadeInLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-        caVideoTiltLayer.addSublayer(caVideoFadeInLayer)
+        caVideoFadeInLayer.frame = layerRec
         
         var animationFadeIn : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
-        animationFadeIn.duration=3.0;
+        animationFadeIn.duration=2.0;
         animationFadeIn.repeatCount=1;
         animationFadeIn.autoreverses=false;
         
@@ -206,29 +198,33 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         animationFadeIn.toValue=1.0
         animationFadeIn.beginTime = AVCoreAnimationBeginTimeAtZero;
         
+        println("animationFadeIn.beginTime \(animationFadeIn.beginTime)");
+        
         caVideoFadeInLayer.addAnimation(animationFadeIn, forKey: "fadeIn")
-
+        caParentLayer.addSublayer(caVideoFadeInLayer)
+        caParentLayer = caVideoFadeInLayer;
+        
         // Quarz animation / fade-in transformation
         var caVideoFadeOutLayer : CALayer = CALayer();
-        caVideoFadeOutLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-        caVideoFadeInLayer.addSublayer(caVideoFadeOutLayer)
+        caVideoFadeOutLayer.frame = layerRec
         
         var animationFadeOut : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
-        animationFadeOut.duration=3.0;
+        animationFadeOut.duration=2.0;
         animationFadeOut.repeatCount=1;
         animationFadeOut.autoreverses=false;
         
         animationFadeOut.fromValue=1.0
         animationFadeOut.toValue=0.0
-        animationFadeOut.beginTime = 4.0;
+        animationFadeOut.beginTime = CMTimeGetSeconds(insertTime) - animationFadeOut.duration;
         
         caVideoFadeOutLayer.addAnimation(animationFadeOut, forKey: "fadeOut")
-
+        caParentLayer.addSublayer(caVideoFadeOutLayer)
+        caParentLayer = caVideoFadeOutLayer;
         
         // using the CA Layers to transform the video, this is where iOS does all the magic!
         // Note: it appears, to chain transformations, one needs to build a chain of layers (by using addSubLayer(childLayer)
         // use the most senior parent to inLayer, and the youngest layer as postProcessingAsVideoLayer) in below call.
-         compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoFadeOutLayer, inLayer: caParentLayer);
+         compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caParentLayer, inLayer: caRootLayer);
         
         // prepare to export movie
         let guid = NSProcessInfo.processInfo().globallyUniqueString
@@ -268,29 +264,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         println("playMovie: \(url) ... ");
     }
     
-    /* 
-(void)exportDidFinish:(AVAssetExportSession*)session {
-if (session.status == AVAssetExportSessionStatusCompleted) {
-NSURL *outputURL = session.outputURL;
-ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputURL]) {
-[library writeVideoAtPathToSavedPhotosAlbum:outputURL completionBlock:^(NSURL *assetURL, NSError *error){
-dispatch_async(dispatch_get_main_queue(), ^{
-if (error) {
-UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Video Saving Failed"
-delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-[alert show];
-} else {
-UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Video Saved" message:@"Saved To Photo Album"
-delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-[alert show];
-}
-});
-}];
-}
-}
-}
-*/
+    
     
     func applicationDocumentsDirectory() -> String {
 
