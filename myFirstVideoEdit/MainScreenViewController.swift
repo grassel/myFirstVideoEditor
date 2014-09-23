@@ -132,8 +132,13 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         
         // the final composition, consisting of a video and an audio track.
         var composition = AVMutableComposition()
+        var compositionVideo = AVMutableVideoComposition();
+        compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
+        compositionVideo.renderSize = CGSizeMake(640, 480);
+        compositionVideo.frameDuration = CMTimeMake(1,30); // 30fs
         let trackVideo:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
         let trackAudio:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
+        
         var insertTime = kCMTimeZero
         var index = 0;
         
@@ -144,15 +149,46 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
             let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
             let audios = sourceAsset.tracksWithMediaType(AVMediaTypeAudio)
             
+   //         let trackInsrucions : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: <#AVAssetTrack!#>)
+            
             if tracks.count > 0 {
                 // append the first video and the first audio track to trackVideo / trackAudio
                 let assetTrack : AVAssetTrack = tracks[0] as AVAssetTrack
                 trackVideo.insertTimeRange(CMTimeRangeMake(kCMTimeZero,sourceAsset.duration), ofTrack: assetTrack, atTime: insertTime, error: nil)
+
+                var transform : CGAffineTransform = assetTrack.preferredTransform;
+                if (transform.a == 0 && transform.d == 0 && (transform.b == 1.0 || transform.b == -1.0) && (transform.c == 1.0 || transform.c == -1.0)) {
+                    println("ERROR: video was shot in portrait mode: \(moviePathUrl)");
+                }
                 
                 if audios.count > 0 {
                     let assetTrackAudio:AVAssetTrack = audios[0] as AVAssetTrack
                     trackAudio.insertTimeRange(CMTimeRangeMake(kCMTimeZero,sourceAsset.duration), ofTrack: assetTrackAudio, atTime: insertTime, error: nil)
                 }
+                
+                var videoCompositionInstruction : AVMutableVideoCompositionInstruction = AVMutableVideoCompositionInstruction();
+                videoCompositionInstruction.timeRange = CMTimeRangeMake(insertTime,sourceAsset.duration);
+                
+                var startTime = insertTime;
+                var endTime = CMTimeAdd(startTime, sourceAsset.duration)
+                var fadeDurSec = 1.0;
+                var fadeDuration : CMTime = CMTimeMakeWithSeconds(fadeDurSec, 1);
+                var fadeInStartTime : CMTime  = insertTime;
+                var fadeOutStartTime : CMTime = CMTimeSubtract(endTime, fadeDuration);
+                
+                var videoLayerFadeInInstruction : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideo)
+                videoLayerFadeInInstruction.setTransform(assetTrack.preferredTransform, atTime: fadeInStartTime);
+                videoLayerFadeInInstruction.setOpacityRampFromStartOpacity(0.0, toEndOpacity: 1.0, timeRange: CMTimeRangeMake(fadeInStartTime, fadeDuration))
+                
+                var videoLayerFadeOutInstruction : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideo)
+                videoLayerFadeOutInstruction.setTransform(assetTrack.preferredTransform, atTime: fadeOutStartTime);
+                videoLayerFadeOutInstruction.setOpacityRampFromStartOpacity(1.0, toEndOpacity: 0.0, timeRange: CMTimeRangeMake(fadeOutStartTime, fadeDuration))
+                
+              //  videoCompositionInstruction.layerInstructions = [ videoLayerFadeInInstruction, videoLayerFadeOutInstruction ];
+                videoCompositionInstruction.layerInstructions = [ videoLayerFadeOutInstruction ];
+                
+                compositionVideo.instructions.append(videoCompositionInstruction)
+
                 insertTime = CMTimeAdd(insertTime, sourceAsset.duration)
             }
         }
@@ -162,6 +198,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
         
         var exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)
+        exporter.videoComposition = compositionVideo;
         exporter.outputURL = completeMovieUrl
         exporter.outputFileType = AVFileTypeMPEG4   //AVFileTypeQuickTimeMovie
         waitIndicator.hidden = false;
@@ -190,7 +227,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         moviePlayer.prepareToPlay();
         moviePlayer.play();
 
-        println("playMovie: moviePlayer properties: duration:\(moviePlayer.duration), playbackState=\(moviePlayer.playbackState), readyForDisplay=\(moviePlayer.readyForDisplay)");
+        println("playMovie: \(url) ... ");
     }
     
     /* 
