@@ -179,44 +179,56 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         }
         
         // Quarz animation / tilt transformaiton
-        
         var caParentLayer : CALayer = CALayer();
         caParentLayer.frame =  CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
         
         // Quarz animation / tilt transformaiton
         var caVideoTiltLayer : CALayer = CALayer();
         caVideoTiltLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-        caParentLayer.addSublayer(caVideoTiltLayer)
+        caParentLayer.addSublayer(caVideoTiltLayer)  // chain the transformations in this way
         
         var identityTransform : CATransform3D  = CATransform3DIdentity;
         identityTransform.m34 = 1.0 / 1000; // greater the denominator lesser will be the transformation
         caVideoTiltLayer.transform = CATransform3DRotate(identityTransform, 3.14159/6.0, 1.0, 0.0, 0.0);
         
-        // using the CA Layers to transform the video, this is where iOS does all the magic!
-        //compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoTiltLayer, inLayer: caParentLayer);
-    
         
         // Quarz animation / fade-in transformation
         var caVideoFadeInLayer : CALayer = CALayer();
         caVideoFadeInLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-        //caParentLayer.addSublayer(caVideoFadeInLayer)
         caVideoTiltLayer.addSublayer(caVideoFadeInLayer)
         
-        var animation : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
-        animation.duration=3.0;
-        animation.repeatCount=1;
-        animation.autoreverses=false;
+        var animationFadeIn : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
+        animationFadeIn.duration=3.0;
+        animationFadeIn.repeatCount=1;
+        animationFadeIn.autoreverses=false;
         
-        animation.fromValue=0.0
-        animation.toValue=1.0
-        animation.beginTime = AVCoreAnimationBeginTimeAtZero;
+        animationFadeIn.fromValue=0.0
+        animationFadeIn.toValue=1.0
+        animationFadeIn.beginTime = AVCoreAnimationBeginTimeAtZero;
         
-        caVideoFadeInLayer.addAnimation(animation, forKey: "fadeIn")
+        caVideoFadeInLayer.addAnimation(animationFadeIn, forKey: "fadeIn")
 
+        // Quarz animation / fade-in transformation
+        var caVideoFadeOutLayer : CALayer = CALayer();
+        caVideoFadeOutLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
+        caVideoFadeInLayer.addSublayer(caVideoFadeOutLayer)
+        
+        var animationFadeOut : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
+        animationFadeOut.duration=3.0;
+        animationFadeOut.repeatCount=1;
+        animationFadeOut.autoreverses=false;
+        
+        animationFadeOut.fromValue=1.0
+        animationFadeOut.toValue=0.0
+        animationFadeOut.beginTime = 4.0;
+        
+        caVideoFadeOutLayer.addAnimation(animationFadeOut, forKey: "fadeOut")
+
+        
         // using the CA Layers to transform the video, this is where iOS does all the magic!
         // Note: it appears, to chain transformations, one needs to build a chain of layers (by using addSubLayer(childLayer)
         // use the most senior parent to inLayer, and the youngest layer as postProcessingAsVideoLayer) in below call.
-         compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoFadeInLayer, inLayer: caParentLayer);
+         compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoFadeOutLayer, inLayer: caParentLayer);
         
         // prepare to export movie
         let guid = NSProcessInfo.processInfo().globallyUniqueString
