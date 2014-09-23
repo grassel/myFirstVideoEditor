@@ -18,6 +18,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
     @IBOutlet weak var movieThumbImage3: UIImageView!
     @IBOutlet weak var movieThumbImage4: UIImageView!
     
+    @IBOutlet weak var viewForMovie: UIView!
     @IBOutlet weak var waitIndicator: UIActivityIndicatorView!
     
     var movieThumbsImageViews : [UIImageView] = [UIImageView]();
@@ -37,6 +38,16 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         ];
         movieThumbsImages = [UIImage](count: 4, repeatedValue: UIImage());
         movieUrls = [NSURL](count: 4, repeatedValue: NSURL());
+        
+        self.moviePlayer = MPMoviePlayerController();
+        self.moviePlayer.view.frame = viewForMovie.bounds;
+        self.moviePlayer.view.autoresizingMask =
+              	           UIViewAutoresizing.FlexibleWidth |
+              	           UIViewAutoresizing.FlexibleHeight;
+        moviePlayer.fullscreen = false;
+        moviePlayer.controlStyle = MPMovieControlStyle.Embedded; // Controls for an embedded view are displayed. The controls include a start/pause button, a scrubber bar, and a button for toggling between fullscreen and embedded display modes.
+
+        self.viewForMovie.addSubview(self.moviePlayer.view)
     }
 
  
@@ -153,7 +164,9 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         var exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)
         exporter.outputURL = completeMovieUrl
         exporter.outputFileType = AVFileTypeMPEG4   //AVFileTypeQuickTimeMovie
+        waitIndicator.hidden = false;
         exporter.exportAsynchronouslyWithCompletionHandler({
+            self.waitIndicator.hidden = true;
             switch exporter.status
                 {
                 case  AVAssetExportSessionStatus.Failed:
@@ -171,17 +184,9 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
     func playMovie(url : NSURL) {
     
         println("playMovie: url=\(url)");
-        moviePlayer = MPMoviePlayerController(contentURL: url)
+        moviePlayer.contentURL = url
         moviePlayer.movieSourceType = MPMovieSourceType.File
-        moviePlayer.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height*1/2)
         
-        
-        moviePlayer.fullscreen = true;
-        
-        moviePlayer.controlStyle = MPMovieControlStyle.Embedded; // Controls for an embedded view are displayed. The controls include a start/pause button, a scrubber bar, and a button for toggling between fullscreen and embedded display modes.
-
-        self.view.addSubview(moviePlayer.view)
-
         moviePlayer.prepareToPlay();
         moviePlayer.play();
 

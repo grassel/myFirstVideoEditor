@@ -63,6 +63,10 @@
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Nff-aN-ogE">
                                 <rect key="frame" x="150" y="227" width="20" height="20"/>
                             </activityIndicatorView>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W4L-Jf-kjP">
+                                <rect key="frame" x="0.0" y="64" width="320" height="379"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -73,6 +77,7 @@
                         <outlet property="movieThumbImage2" destination="Y7L-OZ-00o" id="v3b-X9-BBT"/>
                         <outlet property="movieThumbImage3" destination="ixH-Fk-713" id="Jyb-qe-GNR"/>
                         <outlet property="movieThumbImage4" destination="kQW-Rh-YNp" id="NIC-pP-XQa"/>
+                        <outlet property="viewForMovie" destination="W4L-Jf-kjP" id="lEW-Xp-R13"/>
                         <outlet property="waitIndicator" destination="Nff-aN-ogE" id="q7H-eC-HHt"/>
                     </connections>
                 </viewController>
