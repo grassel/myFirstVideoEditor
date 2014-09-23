@@ -184,7 +184,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         caParentLayer.frame =  CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
         
         // Quarz animation / tilt transformaiton
-        /* var caVideoTiltLayer : CALayer = CALayer();
+        var caVideoTiltLayer : CALayer = CALayer();
         caVideoTiltLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
         caParentLayer.addSublayer(caVideoTiltLayer)
         
@@ -193,13 +193,14 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         caVideoTiltLayer.transform = CATransform3DRotate(identityTransform, 3.14159/6.0, 1.0, 0.0, 0.0);
         
         // using the CA Layers to transform the video, this is where iOS does all the magic!
-        compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoTiltLayer, inLayer: caParentLayer);
-        */
+        //compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoTiltLayer, inLayer: caParentLayer);
+    
         
         // Quarz animation / fade-in transformation
         var caVideoFadeInLayer : CALayer = CALayer();
         caVideoFadeInLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-        caParentLayer.addSublayer(caVideoFadeInLayer)
+        //caParentLayer.addSublayer(caVideoFadeInLayer)
+        caVideoTiltLayer.addSublayer(caVideoFadeInLayer)
         
         var animation : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
         animation.duration=3.0;
@@ -213,10 +214,12 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         caVideoFadeInLayer.addAnimation(animation, forKey: "fadeIn")
 
         // using the CA Layers to transform the video, this is where iOS does all the magic!
-        compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoFadeInLayer, inLayer: caParentLayer);
+        // Note: it appears, to chain transformations, one needs to build a chain of layers (by using addSubLayer(childLayer)
+        // use the most senior parent to inLayer, and the youngest layer as postProcessingAsVideoLayer) in below call.
+         compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoFadeInLayer, inLayer: caParentLayer);
         
         // prepare to export movie
-        let guid = NSProcessInfo.processInfo().globallyUniqueString;
+        let guid = NSProcessInfo.processInfo().globallyUniqueString
         let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
         let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
         
