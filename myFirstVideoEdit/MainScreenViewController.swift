@@ -178,20 +178,22 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
             }
         }
         
-        // Quarz animation / transformaiton 
+        // Quarz animation / tilt transformaiton
         
         var caParentLayer : CALayer = CALayer();
         caParentLayer.frame =  CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-        var caVideoLayer : CALayer = CALayer();
-        caVideoLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-        caParentLayer.addSublayer(caVideoLayer)
+        
+        // Quarz animation / tilt transformaiton
+        var caVideoTiltLayer : CALayer = CALayer();
+        caVideoTiltLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
+        caParentLayer.addSublayer(caVideoTiltLayer)
         
         var identityTransform : CATransform3D  = CATransform3DIdentity;
         identityTransform.m34 = 1.0 / 1000; // greater the denominator lesser will be the transformation
-        compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoLayer, inLayer: caParentLayer)
-        caVideoLayer.transform = CATransform3DRotate(identityTransform, 3.14159/6.0, 1.0, 0.0, 0.0);
+        caVideoTiltLayer.transform = CATransform3DRotate(identityTransform, 3.14159/6.0, 1.0, 0.0, 0.0);
         
-        compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoLayer, inLayer: caParentLayer);
+        // using the CA Layers to transform the video, this is where iOS does all the magic!
+        compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoTiltLayer, inLayer: caParentLayer);
         
         
         let guid = NSProcessInfo.processInfo().globallyUniqueString;
