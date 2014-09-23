@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation;
 import MediaPlayer
 import CoreMedia;
+import QuartzCore;
 
 class MainScreenViewController: UIViewController,  UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -133,7 +134,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         // the final composition, consisting of a video and an audio track.
         var composition = AVMutableComposition()
         var compositionVideo = AVMutableVideoComposition();
-        compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
+       // compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
         compositionVideo.renderSize = CGSizeMake(640, 480);
         compositionVideo.frameDuration = CMTimeMake(1,30); // 30fs
         let trackVideo:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
@@ -169,26 +170,43 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
                 var videoCompositionInstruction : AVMutableVideoCompositionInstruction = AVMutableVideoCompositionInstruction();
                 videoCompositionInstruction.timeRange = CMTimeRangeMake(insertTime,sourceAsset.duration);
                 
-                var startTime = insertTime;
-                var endTime = CMTimeAdd(startTime, sourceAsset.duration)
                 var fadeDurSec = 1.0;
-                var fadeDuration : CMTime = CMTimeMakeWithSeconds(fadeDurSec, 1);
-                var fadeInStartTime : CMTime  = insertTime;
-                var fadeOutStartTime : CMTime = CMTimeSubtract(endTime, fadeDuration);
                 
-                var videoLayerFadeInInstruction : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideo)
-                videoLayerFadeInInstruction.setTransform(assetTrack.preferredTransform, atTime: fadeInStartTime);
-                videoLayerFadeInInstruction.setOpacityRampFromStartOpacity(0.0, toEndOpacity: 1.0, timeRange: CMTimeRangeMake(fadeInStartTime, fadeDuration))
+                var caParentLayer : CALayer = CALayer();
+                caParentLayer.frame =  CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
+                var caChildLayer : CALayer = CALayer();
+                caChildLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
                 
-                var videoLayerFadeOutInstruction : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideo)
-                videoLayerFadeOutInstruction.setTransform(assetTrack.preferredTransform, atTime: fadeOutStartTime);
-                videoLayerFadeOutInstruction.setOpacityRampFromStartOpacity(1.0, toEndOpacity: 0.0, timeRange: CMTimeRangeMake(fadeOutStartTime, fadeDuration))
+                // animate from fully invisible to visible
+                var caAnimationIn : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
+                caAnimationIn.beginTime = AVCoreAnimationBeginTimeAtZero;
+                caAnimationIn.duration = fadeDurSec;
+                caAnimationIn.fromValue = 0.0;
+                caAnimationIn.toValue = 1.0;
+                caAnimationIn.repeatCount = 1;
+                caAnimationIn.autoreverses=false;
+                caAnimationIn.removedOnCompletion = false;
+                caAnimationIn.fillMode = kCAFillModeBoth;
+                caAnimationIn.additive = false;
+                caParentLayer.addAnimation(caAnimationIn, forKey: "fadeIn")
                 
-              //  videoCompositionInstruction.layerInstructions = [ videoLayerFadeInInstruction, videoLayerFadeOutInstruction ];
-                videoCompositionInstruction.layerInstructions = [ videoLayerFadeOutInstruction ];
+                // animate from fully visible to invisible
+                var caAnimationOut : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
+                caAnimationOut.beginTime = 1.0; // FIXME
+                caAnimationOut.duration = fadeDurSec;
+                caAnimationOut.fromValue = 0.0;
+                caAnimationOut.toValue = 1.0;
+                caAnimationOut.repeatCount = 1;
+                caAnimationOut.autoreverses=false;
+                caAnimationOut.removedOnCompletion = false;
+                caAnimationOut.fillMode = kCAFillModeBoth;
+                caAnimationOut.additive = false;
+                caChildLayer.addAnimation(caAnimationOut, forKey: "fadeOut")
                 
-                compositionVideo.instructions.append(videoCompositionInstruction)
+                caParentLayer.addSublayer(caChildLayer);
 
+                compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caChildLayer, inLayer: caParentLayer)
+ 
                 insertTime = CMTimeAdd(insertTime, sourceAsset.duration)
             }
         }
@@ -198,7 +216,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
         
         var exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)
-        exporter.videoComposition = compositionVideo;
+       // exporter.videoComposition = compositionVideo;
         exporter.outputURL = completeMovieUrl
         exporter.outputFileType = AVFileTypeMPEG4   //AVFileTypeQuickTimeMovie
         waitIndicator.hidden = false;
