@@ -19,17 +19,24 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
     @IBOutlet weak var movieThumbImage3: UIImageView!
     @IBOutlet weak var movieThumbImage4: UIImageView!
     
-    @IBOutlet weak var viewForMovie: UIView!
+    // FIXME: we show and hide the indicator, but it remains invisible.
     @IBOutlet weak var waitIndicator: UIActivityIndicatorView!
-    
+
+    // Storyboard does not allow us to add this MoviePlayer directly.
+    // insted, we only create a placeholder view  self.viewForMovie 
+    // in story board and add the MoviePlayer view programmatically
+    @IBOutlet weak var viewForMovie: UIView!
+
+    var moviePlayer:MPMoviePlayerController!
+
+    // the view model
     var movieThumbsImageViews : [UIImageView] = [UIImageView]();
     var movieThumbsImages : [UIImage] = [UIImage]();
+
+    // the model
     var movieUrls : [NSURL] = [NSURL]();
-    
     var movieCount = 0;
     let movieCountMax = 4;
-    
-    var moviePlayer:MPMoviePlayerController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,7 +58,12 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         self.viewForMovie.addSubview(self.moviePlayer.view)
     }
 
- 
+    /*
+    select a new video using UIImagePicker
+    and append it to movieUrls
+    
+     FIXME: This functionality should be moved to an own class.
+    */
     @IBAction func addVideoSelected(sender: AnyObject) {
         if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary) {
             println("UIImagePickerController source type not avail!");
@@ -120,12 +132,18 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         return image;
     }
     
+    /*
+      compositing the movie using AVFoundation AVMutableComposition 
+        and using QuartzCore for fade animations (could be done also with
+        AVMutableVideoCompositionInstruction, but for the sake of study)
+        and exportng to file using AVAssetExportSession
+    */
+    
     @IBAction func exportMovieSelected(sender: AnyObject) {
         exportVideo3(applicationDocumentsDirectory());
     }
     
     func exportVideo3(outputPath:String) {
-        // http://stackoverflow.com/questions/25403315/ios-swift-merge-videos-using-avfoundation
         if (movieCount < 2) {
             println("at leats two movies needed for merging");
             return;
@@ -135,8 +153,8 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         var composition = AVMutableComposition()
         var compositionVideo = AVMutableVideoComposition();
         compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
-        compositionVideo.renderSize = CGSizeMake(640, 480);
-        compositionVideo.frameDuration = CMTimeMake(1,30); // 30fs
+        compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
+        compositionVideo.frameDuration = CMTimeMake(1,30); // 30fps
         let trackVideo:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
         let trackAudio:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
         
@@ -224,7 +242,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         // using the CA Layers to transform the video, this is where iOS does all the magic!
         // Note: it appears, to chain transformations, one needs to build a chain of layers (by using addSubLayer(childLayer)
         // use the most senior parent to inLayer, and the youngest layer as postProcessingAsVideoLayer) in below call.
-         compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caParentLayer, inLayer: caRootLayer);
+        compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caParentLayer, inLayer: caRootLayer);
         
         // prepare to export movie
         let guid = NSProcessInfo.processInfo().globallyUniqueString
