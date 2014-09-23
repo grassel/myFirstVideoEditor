@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation;
+import MediaPlayer
 import CoreMedia;
 
 class MainScreenViewController: UIViewController,  UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -17,12 +18,16 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
     @IBOutlet weak var movieThumbImage3: UIImageView!
     @IBOutlet weak var movieThumbImage4: UIImageView!
     
+    @IBOutlet weak var waitIndicator: UIActivityIndicatorView!
+    
     var movieThumbsImageViews : [UIImageView] = [UIImageView]();
     var movieThumbsImages : [UIImage] = [UIImage]();
     var movieUrls : [NSURL] = [NSURL]();
     
     var movieCount = 0;
     let movieCountMax = 4;
+    
+    var moviePlayer:MPMoviePlayerController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -141,8 +146,8 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
             }
         }
         
-        
-        let completeMovie = outputPath.stringByAppendingPathComponent("movie.mov")
+        let guid = NSProcessInfo.processInfo().globallyUniqueString;
+        let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
         let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
         
         var exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)
@@ -152,15 +157,37 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
             switch exporter.status
                 {
                 case  AVAssetExportSessionStatus.Failed:
-                    println("failed \(exporter.error)")
+                    println("failed url=\(exporter.outputURL), error=\(exporter.error)")
                 case AVAssetExportSessionStatus.Cancelled:
                     println("cancelled \(exporter.error)")
                 default:
                     println("complete")
+                    self.playMovie(exporter.outputURL);
                 }
             })
     }
   
+    
+    func playMovie(url : NSURL) {
+    
+        println("playMovie: url=\(url)");
+        moviePlayer = MPMoviePlayerController(contentURL: url)
+        moviePlayer.movieSourceType = MPMovieSourceType.File
+        moviePlayer.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height*1/2)
+        
+        
+        moviePlayer.fullscreen = true;
+        
+        moviePlayer.controlStyle = MPMovieControlStyle.Embedded; // Controls for an embedded view are displayed. The controls include a start/pause button, a scrubber bar, and a button for toggling between fullscreen and embedded display modes.
+
+        self.view.addSubview(moviePlayer.view)
+
+        moviePlayer.prepareToPlay();
+        moviePlayer.play();
+
+        println("playMovie: moviePlayer properties: duration:\(moviePlayer.duration), playbackState=\(moviePlayer.playbackState), readyForDisplay=\(moviePlayer.readyForDisplay)");
+    }
+    
     /* 
 (void)exportDidFinish:(AVAssetExportSession*)session {
 if (session.status == AVAssetExportSessionStatusCompleted) {

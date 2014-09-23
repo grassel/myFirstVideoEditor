@@ -60,6 +60,9 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kQW-Rh-YNp">
                                 <rect key="frame" x="241" y="451" width="67" height="64"/>
                             </imageView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Nff-aN-ogE">
+                                <rect key="frame" x="150" y="227" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -70,6 +73,7 @@
                         <outlet property="movieThumbImage2" destination="Y7L-OZ-00o" id="v3b-X9-BBT"/>
                         <outlet property="movieThumbImage3" destination="ixH-Fk-713" id="Jyb-qe-GNR"/>
                         <outlet property="movieThumbImage4" destination="kQW-Rh-YNp" id="NIC-pP-XQa"/>
+                        <outlet property="waitIndicator" destination="Nff-aN-ogE" id="q7H-eC-HHt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="clo-8T-WE2" userLabel="First Responder" sceneMemberID="firstResponder"/>
