@@ -134,7 +134,7 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         // the final composition, consisting of a video and an audio track.
         var composition = AVMutableComposition()
         var compositionVideo = AVMutableVideoComposition();
-       // compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
+        compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
         compositionVideo.renderSize = CGSizeMake(640, 480);
         compositionVideo.frameDuration = CMTimeMake(1,30); // 30fs
         let trackVideo:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
@@ -149,8 +149,6 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
             
             let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
             let audios = sourceAsset.tracksWithMediaType(AVMediaTypeAudio)
-            
-   //         let trackInsrucions : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: <#AVAssetTrack!#>)
             
             if tracks.count > 0 {
                 // append the first video and the first audio track to trackVideo / trackAudio
@@ -170,53 +168,38 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
                 var videoCompositionInstruction : AVMutableVideoCompositionInstruction = AVMutableVideoCompositionInstruction();
                 videoCompositionInstruction.timeRange = CMTimeRangeMake(insertTime,sourceAsset.duration);
                 
-                var fadeDurSec = 1.0;
+                var videoLayerInstruction : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideo)
+                videoLayerInstruction.setTransform(assetTrack.preferredTransform, atTime: insertTime);
                 
-                var caParentLayer : CALayer = CALayer();
-                caParentLayer.frame =  CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
-                var caChildLayer : CALayer = CALayer();
-                caChildLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
+                videoCompositionInstruction.layerInstructions = [ videoLayerInstruction ]
+                compositionVideo.instructions.append(videoCompositionInstruction)
                 
-                // animate from fully invisible to visible
-                var caAnimationIn : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
-                caAnimationIn.beginTime = AVCoreAnimationBeginTimeAtZero;
-                caAnimationIn.duration = fadeDurSec;
-                caAnimationIn.fromValue = 0.0;
-                caAnimationIn.toValue = 1.0;
-                caAnimationIn.repeatCount = 1;
-                caAnimationIn.autoreverses=false;
-                caAnimationIn.removedOnCompletion = false;
-                caAnimationIn.fillMode = kCAFillModeBoth;
-                caAnimationIn.additive = false;
-                caParentLayer.addAnimation(caAnimationIn, forKey: "fadeIn")
-                
-                // animate from fully visible to invisible
-                var caAnimationOut : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
-                caAnimationOut.beginTime = 1.0; // FIXME
-                caAnimationOut.duration = fadeDurSec;
-                caAnimationOut.fromValue = 0.0;
-                caAnimationOut.toValue = 1.0;
-                caAnimationOut.repeatCount = 1;
-                caAnimationOut.autoreverses=false;
-                caAnimationOut.removedOnCompletion = false;
-                caAnimationOut.fillMode = kCAFillModeBoth;
-                caAnimationOut.additive = false;
-                caChildLayer.addAnimation(caAnimationOut, forKey: "fadeOut")
-                
-                caParentLayer.addSublayer(caChildLayer);
-
-                compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caChildLayer, inLayer: caParentLayer)
- 
                 insertTime = CMTimeAdd(insertTime, sourceAsset.duration)
             }
         }
+        
+        // Quarz animation / transformaiton 
+        
+        var caParentLayer : CALayer = CALayer();
+        caParentLayer.frame =  CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
+        var caVideoLayer : CALayer = CALayer();
+        caVideoLayer.frame = CGRect(x: 0.0, y: 0.0, width: 640.0, height: 480.0)
+        caParentLayer.addSublayer(caVideoLayer)
+        
+        var identityTransform : CATransform3D  = CATransform3DIdentity;
+        identityTransform.m34 = 1.0 / 1000; // greater the denominator lesser will be the transformation
+        compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoLayer, inLayer: caParentLayer)
+        caVideoLayer.transform = CATransform3DRotate(identityTransform, 3.14159/6.0, 1.0, 0.0, 0.0);
+        
+        compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caVideoLayer, inLayer: caParentLayer);
+        
         
         let guid = NSProcessInfo.processInfo().globallyUniqueString;
         let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
         let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
         
         var exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)
-       // exporter.videoComposition = compositionVideo;
+        exporter.videoComposition = compositionVideo;
         exporter.outputURL = completeMovieUrl
         exporter.outputFileType = AVFileTypeMPEG4   //AVFileTypeQuickTimeMovie
         waitIndicator.hidden = false;
