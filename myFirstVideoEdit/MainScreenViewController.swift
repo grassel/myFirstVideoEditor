@@ -21,7 +21,7 @@ class MainScreenViewController: UIViewController {
     @IBOutlet weak var waitIndicator: UIActivityIndicatorView!
 
     // Storyboard does not allow us to add this MoviePlayer directly.
-    // insted, we only create a placeholder view  self.viewForMovie 
+    // Insted, we only create a placeholder view  self.viewForMovie 
     // in story board and add the MoviePlayer view programmatically
     @IBOutlet weak var viewForMovie: UIView!
 
@@ -104,7 +104,8 @@ class MainScreenViewController: UIViewController {
     
     @IBAction func exportMovieSelected(sender: AnyObject) {
         waitIndicator.startAnimating()
-        movieExporter.exportVideo(applicationDocumentsDirectory());
+   //     movieExporter.exportVideo(applicationDocumentsDirectory());
+        movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());
     }
     
     

@@ -150,4 +150,103 @@ class MovieExporter: NSObject {
             }
         })
     }
+    
+    
+    func exportVideoCrossFade(outputPath:String) {
+        if (myViewcontroller.model.movieCount < 2) {
+            println("at least two movies needed for merging");
+            return;
+        }
+        
+        // the final composition, consisting of a video and an audio track.
+        var composition = AVMutableComposition()
+        var compositionVideo = AVMutableVideoComposition();
+        compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
+        compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
+        compositionVideo.frameDuration = CMTimeMake(1,30); // 30fps
+        let trackVideo : AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
+        let trackAudio : AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
+        
+        var insertTime = kCMTimeZero
+        var index = 0;
+        
+        for index in 0 ... myViewcontroller.model.movieCount-1 {
+            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
+            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+            
+            let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
+            let audios = sourceAsset.tracksWithMediaType(AVMediaTypeAudio)
+            
+            var startTime = insertTime;
+            var endTime = CMTimeAdd(startTime, sourceAsset.duration)
+            var fadeDurSec = 1.0;
+            var fadeDuration : CMTime = CMTimeMakeWithSeconds(fadeDurSec, 1);
+            var fadeInStartTime : CMTime  = insertTime;
+            var fadeOutStartTime : CMTime = CMTimeSubtract(endTime, fadeDuration);
+            
+            if tracks.count > 0 {
+                // append the first video and the first audio track to trackVideo / trackAudio
+                let assetTrack : AVAssetTrack = tracks[0] as AVAssetTrack
+                trackVideo.insertTimeRange(CMTimeRangeMake(kCMTimeZero,sourceAsset.duration), ofTrack: assetTrack, atTime: insertTime, error: nil)
+                
+                var transform : CGAffineTransform = assetTrack.preferredTransform;
+                if (transform.a == 0 && transform.d == 0 && (transform.b == 1.0 || transform.b == -1.0) && (transform.c == 1.0 || transform.c == -1.0)) {
+                    println("ERROR: video was shot in portrait mode: \(moviePathUrl)");
+                }
+                
+                if audios.count > 0 {
+                    let assetTrackAudio:AVAssetTrack = audios[0] as AVAssetTrack
+                    trackAudio.insertTimeRange(CMTimeRangeMake(kCMTimeZero,sourceAsset.duration), ofTrack: assetTrackAudio, atTime: insertTime, error: nil)
+                }
+                
+                var videoCompositionInstruction : AVMutableVideoCompositionInstruction = AVMutableVideoCompositionInstruction();
+                videoCompositionInstruction.timeRange = CMTimeRangeMake(insertTime,sourceAsset.duration);
+                
+                var videoLayerInstruction : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideo)
+                videoLayerInstruction.setTransform(assetTrack.preferredTransform, atTime: insertTime);
+                if (index == 0) {
+                    // first video opacity ramp up
+                    videoLayerInstruction.setOpacityRampFromStartOpacity(0.0, toEndOpacity: 1.0, timeRange: CMTimeRangeMake(fadeInStartTime, fadeDuration))
+                } else if (index == myViewcontroller.model.movieCount-1) {
+                    // first video opacity ramp down
+                    videoLayerInstruction.setOpacityRampFromStartOpacity(1.0, toEndOpacity: 0.0, timeRange: CMTimeRangeMake(fadeOutStartTime, fadeDuration))
+                }
+                videoCompositionInstruction.layerInstructions = [ videoLayerInstruction ]
+                compositionVideo.instructions.append(videoCompositionInstruction)
+                
+                println ("video starts at \(CMTimeGetSeconds(insertTime))");
+                insertTime = CMTimeAdd(insertTime, sourceAsset.duration)
+            }
+        }
+        
+        // prepare to export movie
+        let guid = NSProcessInfo.processInfo().globallyUniqueString
+        let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
+        let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
+        
+        var exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)
+        exporter.videoComposition = compositionVideo;
+        exporter.outputURL = completeMovieUrl
+        exporter.outputFileType = AVFileTypeMPEG4   //AVFileTypeQuickTimeMovie
+        
+        
+        exporter.exportAsynchronouslyWithCompletionHandler({
+            // this handler gets called in a background thread!
+            switch exporter.status
+                {
+            case  AVAssetExportSessionStatus.Failed:
+                println("failed url=\(exporter.outputURL), error=\(exporter.error)")
+                return;
+            case AVAssetExportSessionStatus.Cancelled:
+                println("cancelled \(exporter.error)")
+                return;
+            default:
+                println("complete")
+            }
+            
+            NSOperationQueue.mainQueue().addOperationWithBlock(){
+                self.myViewcontroller.playMovie(exporter.outputURL);
+            }
+        })
+    }
 }
