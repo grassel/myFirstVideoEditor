@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C585C32C19D089D500DEF038 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C585C32B19D089D500DEF038 /* CoreMedia.framework */; };
+		C601B6CD19D301FA001BF575 /* MovieExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C601B6CC19D301FA001BF575 /* MovieExporter.swift */; };
 		C66C1BBA19D0471E00847669 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BB919D0471E00847669 /* AppDelegate.swift */; };
 		C66C1BBC19D0471E00847669 /* MainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BBB19D0471E00847669 /* MainScreenViewController.swift */; };
 		C66C1BBF19D0471E00847669 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C66C1BBD19D0471E00847669 /* Main.storyboard */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		C585C32B19D089D500DEF038 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		C601B6CC19D301FA001BF575 /* MovieExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieExporter.swift; sourceTree = "<group>"; };
 		C66C1BB419D0471E00847669 /* myFirstVideoEdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myFirstVideoEdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C66C1BB819D0471E00847669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C66C1BB919D0471E00847669 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				C66C1BB919D0471E00847669 /* AppDelegate.swift */,
 				C66C1BBB19D0471E00847669 /* MainScreenViewController.swift */,
 				C691336419D2E09E00C347E5 /* VideoPicker.swift */,
+				C601B6CC19D301FA001BF575 /* MovieExporter.swift */,
 				C691336619D2F0B700C347E5 /* Model.swift */,
 				C66C1BC019D0471E00847669 /* Images.xcassets */,
 				C66C1BC219D0471E00847669 /* LaunchScreen.xib */,
@@ -234,6 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C691336519D2E09E00C347E5 /* VideoPicker.swift in Sources */,
+				C601B6CD19D301FA001BF575 /* MovieExporter.swift in Sources */,
 				C66C1BBC19D0471E00847669 /* MainScreenViewController.swift in Sources */,
 				C66C1BBA19D0471E00847669 /* AppDelegate.swift in Sources */,
 				C691336719D2F0B700C347E5 /* Model.swift in Sources */,
