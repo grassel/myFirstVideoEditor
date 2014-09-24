@@ -60,11 +60,15 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kQW-Rh-YNp">
                                 <rect key="frame" x="241" y="451" width="67" height="64"/>
                             </imageView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Nff-aN-ogE">
-                                <rect key="frame" x="150" y="227" width="20" height="20"/>
-                            </activityIndicatorView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W4L-Jf-kjP">
                                 <rect key="frame" x="0.0" y="64" width="320" height="379"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="j8c-X8-gd4">
+                                        <rect key="frame" x="140" y="180" width="37" height="37"/>
+                                        <rect key="contentStretch" x="1" y="1" width="1" height="1"/>
+                                        <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </activityIndicatorView>
+                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
@@ -80,7 +84,7 @@
                         <outlet property="movieThumbImage3" destination="ixH-Fk-713" id="Jyb-qe-GNR"/>
                         <outlet property="movieThumbImage4" destination="kQW-Rh-YNp" id="NIC-pP-XQa"/>
                         <outlet property="viewForMovie" destination="W4L-Jf-kjP" id="lEW-Xp-R13"/>
-                        <outlet property="waitIndicator" destination="Nff-aN-ogE" id="q7H-eC-HHt"/>
+                        <outlet property="waitIndicator" destination="j8c-X8-gd4" id="t2z-Zj-YFQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="clo-8T-WE2" userLabel="First Responder" sceneMemberID="firstResponder"/>

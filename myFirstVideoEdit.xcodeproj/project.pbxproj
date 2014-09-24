@@ -17,6 +17,7 @@
 		C66C1BDA19D049F600847669 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C1BD919D049F600847669 /* AVFoundation.framework */; };
 		C66C1BDC19D04A1300847669 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C1BDB19D04A1300847669 /* UIKit.framework */; };
 		C691336519D2E09E00C347E5 /* VideoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691336419D2E09E00C347E5 /* VideoPicker.swift */; };
+		C691336719D2F0B700C347E5 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691336619D2F0B700C347E5 /* Model.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		C66C1BDB19D04A1300847669 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C66C1BDF19D06A1C00847669 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		C691336419D2E09E00C347E5 /* VideoPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPicker.swift; sourceTree = "<group>"; };
+		C691336619D2F0B700C347E5 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				C66C1BB919D0471E00847669 /* AppDelegate.swift */,
 				C66C1BBB19D0471E00847669 /* MainScreenViewController.swift */,
 				C691336419D2E09E00C347E5 /* VideoPicker.swift */,
+				C691336619D2F0B700C347E5 /* Model.swift */,
 				C66C1BC019D0471E00847669 /* Images.xcassets */,
 				C66C1BC219D0471E00847669 /* LaunchScreen.xib */,
 				C66C1BB719D0471E00847669 /* Supporting Files */,
@@ -233,6 +236,7 @@
 				C691336519D2E09E00C347E5 /* VideoPicker.swift in Sources */,
 				C66C1BBC19D0471E00847669 /* MainScreenViewController.swift in Sources */,
 				C66C1BBA19D0471E00847669 /* AppDelegate.swift in Sources */,
+				C691336719D2F0B700C347E5 /* Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

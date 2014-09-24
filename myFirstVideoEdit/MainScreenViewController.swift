@@ -19,7 +19,6 @@ class MainScreenViewController: UIViewController {
     @IBOutlet weak var movieThumbImage3: UIImageView!
     @IBOutlet weak var movieThumbImage4: UIImageView!
     
-    // FIXME: we show and hide the indicator, but it remains invisible.
     @IBOutlet weak var waitIndicator: UIActivityIndicatorView!
 
     // Storyboard does not allow us to add this MoviePlayer directly.
@@ -35,22 +34,19 @@ class MainScreenViewController: UIViewController {
     // the view model
     var movieThumbsImageViews : [UIImageView] = [UIImageView]();
     var movieThumbsImages : [UIImage] = [UIImage]();
-
-    // the model
-    var movieUrls : [NSURL] = [NSURL]();
-    var movieCount = 0;
-    let movieCountMax = 4;
     
     var videoPicker : VideoPicker!
+    var model : Model!;
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        model = Model();
+        
         movieThumbsImageViews = [
             movieThumbImage1!, movieThumbImage2!, movieThumbImage3!, movieThumbImage4!
         ];
-        movieThumbsImages = [UIImage](count: 4, repeatedValue: UIImage());
-        movieUrls = [NSURL](count: 4, repeatedValue: NSURL());
+        movieThumbsImages = [UIImage](count: model.movieCountMax, repeatedValue: UIImage());
         
         self.moviePlayer = MPMoviePlayerController();
         self.moviePlayer.view.frame = viewForMovie.bounds;
@@ -64,8 +60,11 @@ class MainScreenViewController: UIViewController {
     }
 
     override func viewWillAppear(animated: Bool) {
-        addVideoButton.enabled = (movieCount < movieCountMax);
-        exportButton.enabled = (movieCount >= 2);
+        addVideoButton.enabled = (model.movieCount < model.movieCountMax);
+        exportButton.enabled = (model.movieCount >= 2);
+        waitIndicator.hidesWhenStopped = true;
+        waitIndicator.stopAnimating()
+        waitIndicator.layer.zPosition = 9999; // always on top
     }
     
     /*
@@ -82,15 +81,15 @@ class MainScreenViewController: UIViewController {
     }
     
     func addMovie(#originalMediaUrl: NSURL, editedMediaUrl : NSURL, thumbnail: UIImage)  {
-        if movieCount < movieCountMax {
-            movieUrls[movieCount] = editedMediaUrl;
-            movieThumbsImages[movieCount] = thumbnail;
-            movieThumbsImageViews[movieCount].image  =
-                movieThumbsImages[movieCount];
-            movieCount++;
+        if model.movieCount < model.movieCountMax {
+            movieThumbsImages[model.movieCount] = thumbnail;
+            movieThumbsImageViews[model.movieCount].image  =
+                movieThumbsImages[model.movieCount];
+            
+            model.addMovie(originalMediaUrl: originalMediaUrl, editedMediaUrl: editedMediaUrl)
         }
-        addVideoButton.enabled = (movieCount < movieCountMax);
-        exportButton.enabled = (movieCount >= 2);
+        addVideoButton.enabled = (model.movieCount < model.movieCountMax);
+        exportButton.enabled = (model.movieCount >= 2);
     }
     
     /*
@@ -105,10 +104,11 @@ class MainScreenViewController: UIViewController {
     }
     
     func exportVideo3(outputPath:String) {
-        if (movieCount < 2) {
+        if (model.movieCount < 2) {
             println("at leats two movies needed for merging");
             return;
         }
+        waitIndicator.startAnimating()
         
         // the final composition, consisting of a video and an audio track.
         var composition = AVMutableComposition()
@@ -122,8 +122,8 @@ class MainScreenViewController: UIViewController {
         var insertTime = kCMTimeZero
         var index = 0;
         
-        for index in 0 ... movieCount-1 {
-            let moviePathUrl = movieUrls[index];
+        for index in 0 ... model.movieCount-1 {
+            let moviePathUrl = model.movieUrlAt(index) 
             let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
             
             let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
@@ -214,22 +214,28 @@ class MainScreenViewController: UIViewController {
         exporter.videoComposition = compositionVideo;
         exporter.outputURL = completeMovieUrl
         exporter.outputFileType = AVFileTypeMPEG4   //AVFileTypeQuickTimeMovie
-        waitIndicator.hidden = false;
+
+        
         exporter.exportAsynchronouslyWithCompletionHandler({
-            self.waitIndicator.hidden = true;
             switch exporter.status
                 {
-                case  AVAssetExportSessionStatus.Failed:
-                    println("failed url=\(exporter.outputURL), error=\(exporter.error)")
-                case AVAssetExportSessionStatus.Cancelled:
-                    println("cancelled \(exporter.error)")
-                default:
-                    println("complete")
-                    self.playMovie(exporter.outputURL);
-                }
-            })
+            case  AVAssetExportSessionStatus.Failed:
+                println("failed url=\(exporter.outputURL), error=\(exporter.error)")
+                return;
+            case AVAssetExportSessionStatus.Cancelled:
+                println("cancelled \(exporter.error)")
+                return;
+            default:
+                println("complete")
+            }
+            
+            NSOperationQueue.mainQueue().addOperationWithBlock(){
+                self.waitIndicator.stopAnimating()
+                self.playMovie(exporter.outputURL);
+            }
+        })
     }
-  
+    
     
     func playMovie(url : NSURL) {
     

@@ -10,6 +10,9 @@ import UIKit
 import AVFoundation;
 import CoreMedia;
 
+// class wraps functionality related to picking a video using the
+// UIImagePicker component.
+// yViewController.addMovie(..) delivers the result back the the VC.
 class VideoPicker: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
    
     let myViewController : MainScreenViewController!
