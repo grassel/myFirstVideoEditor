@@ -105,7 +105,7 @@ class MainScreenViewController: UIViewController {
     @IBAction func exportMovieSelected(sender: AnyObject) {
         waitIndicator.startAnimating()
    //     movieExporter.exportVideo(applicationDocumentsDirectory());
-        movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());
+        movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());3
     }
     
     
