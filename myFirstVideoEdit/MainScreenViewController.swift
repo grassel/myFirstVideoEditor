@@ -12,7 +12,7 @@ import MediaPlayer
 import CoreMedia;
 import QuartzCore;
 
-class MainScreenViewController: UIViewController,  UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class MainScreenViewController: UIViewController {
 
     @IBOutlet weak var movieThumbImage1: UIImageView!
     @IBOutlet weak var movieThumbImage2: UIImageView!
@@ -27,6 +27,9 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
     // in story board and add the MoviePlayer view programmatically
     @IBOutlet weak var viewForMovie: UIView!
 
+    @IBOutlet weak var addVideoButton: UIBarButtonItem!
+    @IBOutlet weak var exportButton: UIBarButtonItem!
+
     var moviePlayer:MPMoviePlayerController!
 
     // the view model
@@ -37,6 +40,8 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
     var movieUrls : [NSURL] = [NSURL]();
     var movieCount = 0;
     let movieCountMax = 4;
+    
+    var videoPicker : VideoPicker!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,6 +63,11 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
         self.viewForMovie.addSubview(self.moviePlayer.view)
     }
 
+    override func viewWillAppear(animated: Bool) {
+        addVideoButton.enabled = (movieCount < movieCountMax);
+        exportButton.enabled = (movieCount >= 2);
+    }
+    
     /*
     select a new video using UIImagePicker
     and append it to movieUrls
@@ -65,71 +75,22 @@ class MainScreenViewController: UIViewController,  UIImagePickerControllerDelega
      FIXME: This functionality should be moved to an own class.
     */
     @IBAction func addVideoSelected(sender: AnyObject) {
-        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary) {
-            println("UIImagePickerController source type not avail!");
-            return;
+        if (videoPicker == nil) {
+            self.videoPicker = VideoPicker(viewController: self);
         }
-        
-        var videoPickerVC = UIImagePickerController();
-        videoPickerVC.sourceType = UIImagePickerControllerSourceType.PhotoLibrary;
-        var availMediaTypesAny : [AnyObject]? = UIImagePickerController.availableMediaTypesForSourceType(UIImagePickerControllerSourceType.PhotoLibrary);
-        if (availMediaTypesAny == nil) {
-            println ("No media found");
-            return;
-        }
-        
-        // heck, Array has not indexOf method?!
-        var availMediaTypes = availMediaTypesAny! as [String];
-        while (availMediaTypes.count > 0) {
-            if (availMediaTypes.last == "public.movie") {
-                break;
-            } else {
-                availMediaTypes.removeLast();
-            }
-        }
-        
-        if (availMediaTypes.count == 0) {
-            println ("No movies found");
-            return;
-        }
-        
-        videoPickerVC.mediaTypes = [ "public.movie" ];
-        videoPickerVC.setEditing(true, animated: false)
-        videoPickerVC.delegate = self;
-        self.presentViewController(videoPickerVC, animated: true, nil)
-    }
-
-    
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        var originalMediaUrl = info[UIImagePickerControllerMediaURL] as? NSURL;
-        var editedMediaUrl = info[UIImagePickerControllerReferenceURL] as? NSURL;
-        println("editedMediaUrl: \(editedMediaUrl), originalMediaUrl: \(originalMediaUrl)");
-        picker.dismissViewControllerAnimated(true, completion: { var p = editedMediaUrl; self.addMovie(editedMediaUrl!) } )
+        videoPicker.selectVideo();
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        println("user cancelled picking");
-        picker.dismissViewControllerAnimated(true, completion: nil)
-    }
-
-    func addMovie(editedMediaUrl : NSURL) {
+    func addMovie(#originalMediaUrl: NSURL, editedMediaUrl : NSURL, thumbnail: UIImage)  {
         if movieCount < movieCountMax {
             movieUrls[movieCount] = editedMediaUrl;
-            movieThumbsImages[movieCount] = generateThumb(editedMediaUrl);
-            movieThumbsImageViews[movieCount].image  =  movieThumbsImages[movieCount];
+            movieThumbsImages[movieCount] = thumbnail;
+            movieThumbsImageViews[movieCount].image  =
+                movieThumbsImages[movieCount];
             movieCount++;
         }
-    }
-    
-    func generateThumb(movieUrl : NSURL) -> UIImage {
-        // http://stackoverflow.com/questions/19105721/thumbnailimageattime-now-deprecated-whats-the-alternative
-        var asset : AVURLAsset = AVURLAsset (URL: movieUrl, options: nil);
-        var generator : AVAssetImageGenerator = AVAssetImageGenerator(asset: asset);
-        generator.appliesPreferredTrackTransform = true;
-        var time : CMTime = CMTimeMake(1,2);
-        var oneRef : CGImageRef = generator.copyCGImageAtTime(time, actualTime: nil, error: nil);
-        var image : UIImage = UIImage(CGImage: oneRef);
-        return image;
+        addVideoButton.enabled = (movieCount < movieCountMax);
+        exportButton.enabled = (movieCount >= 2);
     }
     
     /*
