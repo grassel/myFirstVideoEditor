@@ -158,17 +158,53 @@ class MovieExporter: NSObject {
             return;
         }
         
+        // the duration of a complete fade-in or a fade-out.
+        let fadeDurSec = 1.0;
+        let fadeDuration : CMTime = CMTimeMakeWithSeconds(fadeDurSec, 1);
+        
+        // the time two movies overlap == fadeDurSec
+        let movieOverlapTimeSec = fadeDurSec;
+        let movieOverlapTime : CMTime = CMTimeMakeWithSeconds(movieOverlapTimeSec, 1);
+        
+        var startTimes = [CMTime]();
+        var fadeOutStartTimes = [CMTime]();
+        
+        var startTime = kCMTimeZero
+        var startTimeSec = CMTimeGetSeconds(startTime);
+        
+        var endTime : CMTime = startTime;
+        
+        for index in 0 ... myViewcontroller.model.movieCount-1 {
+            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
+            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+            
+            endTime = CMTimeAdd(startTime, sourceAsset.duration)
+            let fadeOutStartTime = CMTimeSubtract(endTime, fadeDuration)
+            startTimes.append(startTime);
+            fadeOutStartTimes.append(fadeOutStartTime);
+            
+            println ("video starts at \(CMTimeGetSeconds(startTime)), fadeOut starts at\(CMTimeGetSeconds(fadeOutStartTime)), video ends at \(CMTimeGetSeconds(endTime))");
+            
+            // start time of the next movie clip is the duration of previous clip minus the
+            // time the clips overlap.
+            startTime = CMTimeSubtract(endTime, movieOverlapTime);
+            // non ovelap startTime = endTime;
+        }
+        var compositeDuration : CMTime  = CMTimeSubtract(endTime, startTimes[0]);
+        println ("compositeDuration \(CMTimeGetSeconds(compositeDuration))");
+        
+        
         // the final composition, consisting of a video and an audio track.
         var composition = AVMutableComposition()
-        var compositionVideo = AVMutableVideoComposition();
-        compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
-        compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
-        compositionVideo.frameDuration = CMTimeMake(1,30); // 30fps
-        let trackVideo : AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
-        let trackAudio : AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
         
-        var insertTime = kCMTimeZero
-        var index = 0;
+        // two tracks for audio and for video needed for cross fade
+        var trackVideos = [AVMutableCompositionTrack]();
+        trackVideos.append(composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID()))
+        trackVideos.append(composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID()))
+        
+        var trackAudios = [AVMutableCompositionTrack]();
+        trackAudios.append(composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID()))
+        trackAudios.append(composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID()))
         
         for index in 0 ... myViewcontroller.model.movieCount-1 {
             let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
@@ -177,47 +213,61 @@ class MovieExporter: NSObject {
             let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
             let audios = sourceAsset.tracksWithMediaType(AVMediaTypeAudio)
             
-            var startTime = insertTime;
-            var endTime = CMTimeAdd(startTime, sourceAsset.duration)
-            var fadeDurSec = 1.0;
-            var fadeDuration : CMTime = CMTimeMakeWithSeconds(fadeDurSec, 1);
-            var fadeInStartTime : CMTime  = insertTime;
-            var fadeOutStartTime : CMTime = CMTimeSubtract(endTime, fadeDuration);
+            if tracks.count > 0 {
+                // append the first video and the first audio track to alternating trackVideo / trackAudio
+                let assetTrack : AVAssetTrack = tracks[0] as AVAssetTrack
+                // insert the entire (start to end) movie clip video track at computed start-time
+                trackVideos[index % 2].insertTimeRange(CMTimeRangeMake(kCMTimeZero,sourceAsset.duration), ofTrack: assetTrack, atTime: startTimes[index], error: nil)
+                
+                if audios.count > 0 {
+                    let assetTrackAudio:AVAssetTrack = audios[0] as AVAssetTrack
+                    // same for audio as for video track.
+                    trackAudios[index % 2].insertTimeRange(CMTimeRangeMake(kCMTimeZero,sourceAsset.duration), ofTrack: assetTrackAudio, atTime: startTimes[index], error: nil)
+                }
+            }
+        }
+        
+        
+        // instructions how to composite the video tracks together (the composite could also do other things, like overlaying images, masks, but we don't do this here
+        var compositionVideo = AVMutableVideoComposition();
+        compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
+        compositionVideo.frameDuration = CMTimeMake(1,30); // 30fps
+        
+        compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
+        var videoCompositionInstruction = AVMutableVideoCompositionInstruction();
+        videoCompositionInstruction.timeRange = CMTimeRangeMake(startTimes[0], compositeDuration);
+        videoCompositionInstruction.layerInstructions = [AVMutableVideoCompositionLayerInstruction](); // will add a layer instruction per video clip.
+        
+        for index in 0 ... myViewcontroller.model.movieCount-1 {
+            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
+            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+            let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
+            
+            var startTime = startTimes[index];
+            var fadeOutStartTime = fadeOutStartTimes[index];
             
             if tracks.count > 0 {
                 // append the first video and the first audio track to trackVideo / trackAudio
                 let assetTrack : AVAssetTrack = tracks[0] as AVAssetTrack
-                trackVideo.insertTimeRange(CMTimeRangeMake(kCMTimeZero,sourceAsset.duration), ofTrack: assetTrack, atTime: insertTime, error: nil)
                 
                 var transform : CGAffineTransform = assetTrack.preferredTransform;
                 if (transform.a == 0 && transform.d == 0 && (transform.b == 1.0 || transform.b == -1.0) && (transform.c == 1.0 || transform.c == -1.0)) {
                     println("ERROR: video was shot in portrait mode: \(moviePathUrl)");
                 }
                 
-                if audios.count > 0 {
-                    let assetTrackAudio:AVAssetTrack = audios[0] as AVAssetTrack
-                    trackAudio.insertTimeRange(CMTimeRangeMake(kCMTimeZero,sourceAsset.duration), ofTrack: assetTrackAudio, atTime: insertTime, error: nil)
-                }
-                
-                var videoCompositionInstruction : AVMutableVideoCompositionInstruction = AVMutableVideoCompositionInstruction();
-                videoCompositionInstruction.timeRange = CMTimeRangeMake(insertTime,sourceAsset.duration);
-                
-                var videoLayerInstruction : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideo)
-                videoLayerInstruction.setTransform(assetTrack.preferredTransform, atTime: insertTime);
+                var videoLayerInstruction : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideos[index % 2])
+                videoLayerInstruction.setTransform(transform, atTime: startTime);
                 if (index == 0) {
                     // first video opacity ramp up
-                    videoLayerInstruction.setOpacityRampFromStartOpacity(0.0, toEndOpacity: 1.0, timeRange: CMTimeRangeMake(fadeInStartTime, fadeDuration))
-                } else if (index == myViewcontroller.model.movieCount-1) {
-                    // first video opacity ramp down
                     videoLayerInstruction.setOpacityRampFromStartOpacity(1.0, toEndOpacity: 0.0, timeRange: CMTimeRangeMake(fadeOutStartTime, fadeDuration))
+                } else if (index == 1) {
+                    // first video opacity ramp down
+                    videoLayerInstruction.setOpacityRampFromStartOpacity(0.0, toEndOpacity: 1.0, timeRange: CMTimeRangeMake(startTime, fadeDuration))
                 }
-                videoCompositionInstruction.layerInstructions = [ videoLayerInstruction ]
-                compositionVideo.instructions.append(videoCompositionInstruction)
-                
-                println ("video starts at \(CMTimeGetSeconds(insertTime))");
-                insertTime = CMTimeAdd(insertTime, sourceAsset.duration)
+                videoCompositionInstruction.layerInstructions.append (videoLayerInstruction);
             }
         }
+        compositionVideo.instructions.append(videoCompositionInstruction)
         
         // prepare to export movie
         let guid = NSProcessInfo.processInfo().globallyUniqueString
