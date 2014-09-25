@@ -335,6 +335,7 @@ class MovieExporter: NSObject {
         
         var trackEndTime : CMTime = trackStartTime;
         
+        // 1. step: compute times and populate above data structures with values.
         for index in 0 ... myViewcontroller.model.movieCount-1 {
             let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
             let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
@@ -377,10 +378,12 @@ class MovieExporter: NSObject {
         println ("compositeDuration \(CMTimeGetSeconds(compositeDuration))");
         
         
-        // the final composition, consisting of a video and an audio track.
+        // 'composition': the final composition, consisting of video and audio track.
         var composition = AVMutableComposition()
         
-        // two tracks for audio and for video needed for cross fade
+        // 2nd step: put clips to temporal order:
+        //   create and populate two audio and two video tracks.
+        //   put clips to alternating tracks, clips overlap by fadeDuration
         var trackVideos = [AVMutableCompositionTrack]();
         trackVideos.append(composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID()))
         trackVideos.append(composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID()))
@@ -410,8 +413,17 @@ class MovieExporter: NSObject {
             }
         }
         
-        
-        // instructions how to composite the video tracks together (the composite could also do other things, like overlaying images, masks, but we don't do this here
+        // 3rd step: define instructions how to composite video from pre-defined two tracks into one output.
+        // one AVMutableVideoComposition object has a list of AVMutableVideoCompositionInstruction objects. 
+        // each AVMutableVideoCompositionInstruction defines the compostion for a 'timeRange'. Those time ranges
+        // must cover the entire duration of the compositive movie, and they must not overlap each other.
+        // Further, AVMutableVideoCompositionInstruction includes a list of AVMutableVideoCompositionLayerInstruction.
+        // Exactly one AVMutableVideoCompositionLayerInstruction object is needed per AVMutableCompositionTrack (see 2nd step)
+        // so it links the layer to its video track source. Therefore, for passthrough timeRange, only one 
+        // AVMutableVideoCompositionLayerInstruction object is needed, and for a cross-fade two such objects refer to the 
+        // two clips (and the track they are contained in).
+        // opacity animation, transformations are defined on a AVMutableVideoCompositionLayerInstruction object.
+        // note that the API only allows defining one opacity-ramp per AVMutableVideoCompositionLayerInstruction object.
         var compositionVideo = AVMutableVideoComposition();
         compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
         compositionVideo.frameDuration = CMTimeMake(1,30); // 30fps
@@ -466,7 +478,7 @@ class MovieExporter: NSObject {
             }
         }
         
-        // prepare to export movie
+        // 4th step: prepare to export movie
         let guid = NSProcessInfo.processInfo().globallyUniqueString
         let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
         let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
