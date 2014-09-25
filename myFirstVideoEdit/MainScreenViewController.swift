@@ -10,7 +10,6 @@ import UIKit
 import AVFoundation;
 import MediaPlayer
 
-
 class MainScreenViewController: UIViewController {
 
     @IBOutlet weak var movieThumbImage1: UIImageView!
