@@ -46,6 +46,24 @@
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W4L-Jf-kjP" userLabel="thumbsContainer">
                                 <rect key="frame" x="0.0" y="446" width="320" height="77"/>
                                 <subviews>
+                                    <button opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zJ7-fU-FLv">
+                                        <rect key="frame" x="149" y="22" width="24" height="30"/>
+                                        <state key="normal" backgroundImage="transitionButtonImage">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="transitionSelected:" destination="dSY-ef-eQv" eventType="touchUpInside" id="4EK-RS-1DV"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5oQ-hs-egR">
+                                        <rect key="frame" x="228" y="22" width="24" height="30"/>
+                                        <state key="normal" backgroundImage="transitionButtonImage">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="transitionSelected:" destination="dSY-ef-eQv" eventType="touchUpInside" id="W94-7X-hUS"/>
+                                        </connections>
+                                    </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="placeholderBlack" translatesAutoresizingMaskIntoConstraints="NO" id="CQF-Ri-apH">
                                         <rect key="frame" x="8" y="5" width="67" height="64"/>
                                     </imageView>
@@ -58,6 +76,13 @@
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="placeholderBlack" translatesAutoresizingMaskIntoConstraints="NO" id="ixH-Fk-713">
                                         <rect key="frame" x="166" y="5" width="67" height="64"/>
                                     </imageView>
+                                    <button opaque="NO" contentMode="center" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ela-Yl-xp8">
+                                        <rect key="frame" x="68" y="22" width="26" height="30"/>
+                                        <state key="normal" backgroundImage="transitionButtonImage"/>
+                                        <connections>
+                                            <action selector="transitionSelected:" destination="dSY-ef-eQv" eventType="touchUpInside" id="mqp-Kb-P7Z"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -97,6 +122,9 @@
                         <outlet property="movieThumbImage2" destination="Y7L-OZ-00o" id="v3b-X9-BBT"/>
                         <outlet property="movieThumbImage3" destination="ixH-Fk-713" id="Jyb-qe-GNR"/>
                         <outlet property="movieThumbImage4" destination="kQW-Rh-YNp" id="NIC-pP-XQa"/>
+                        <outlet property="transitionIndicatorButton1" destination="Ela-Yl-xp8" id="26f-Pi-hSZ"/>
+                        <outlet property="transitionIndicatorButton2" destination="zJ7-fU-FLv" id="lYa-UE-SEm"/>
+                        <outlet property="transitionIndicatorButton3" destination="5oQ-hs-egR" id="qjN-Kn-CZl"/>
                         <outlet property="viewForMovie" destination="Eqg-ZQ-baQ" id="6T9-yF-FNb"/>
                         <outlet property="waitIndicator" destination="j8c-X8-gd4" id="t2z-Zj-YFQ"/>
                     </connections>
@@ -108,5 +136,6 @@
     </scenes>
     <resources>
         <image name="placeholderBlack" width="89" height="87"/>
+        <image name="transitionButtonImage" width="40" height="41"/>
     </resources>
 </document>

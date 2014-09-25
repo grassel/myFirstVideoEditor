@@ -18,6 +18,10 @@ class MainScreenViewController: UIViewController {
     @IBOutlet weak var movieThumbImage3: UIImageView!
     @IBOutlet weak var movieThumbImage4: UIImageView!
     
+    @IBOutlet weak var transitionIndicatorButton1: UIButton!
+    @IBOutlet weak var transitionIndicatorButton2: UIButton!
+    @IBOutlet weak var transitionIndicatorButton3: UIButton!
+    
     @IBOutlet weak var waitIndicator: UIActivityIndicatorView!
 
     // Storyboard does not allow us to add this MoviePlayer directly.
@@ -54,6 +58,18 @@ class MainScreenViewController: UIViewController {
             if oldValue != isExporting {
                 updateToolbarButtonStates()
                 updateWaitIndicator();
+            }
+        }
+    }
+    
+    var useCrossFadeTransition : Bool = true {
+        didSet {
+            if oldValue != useCrossFadeTransition {
+                var image = useCrossFadeTransition ? UIImage(named: "transitionButtonImage") : UIImage(named: "cutTransitionButtonImage");
+                transitionIndicatorButton1?.setBackgroundImage(image, forState: .Normal)
+                transitionIndicatorButton2?.setBackgroundImage(image, forState: .Normal)
+                transitionIndicatorButton3?.setBackgroundImage(image, forState: .Normal)
+                videoAddedSinceLastExport = true;
             }
         }
     }
@@ -158,11 +174,13 @@ class MainScreenViewController: UIViewController {
     
     @IBAction func exportMovieSelected(sender: AnyObject) {
         isExporting = true;
-        // FIXME: toggle two implementation options
-   //     movieExporter.exportVideo(applicationDocumentsDirectory());
-        movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());
+        if (useCrossFadeTransition) {
+            movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());
+        } else {
+            movieExporter.exportVideo(applicationDocumentsDirectory());
+        }
     }
-    
+
     func movieExportCompletedOK(url : NSURL) {
         isExporting = false;
         videoAddedSinceLastExport = false;
@@ -195,6 +213,13 @@ class MainScreenViewController: UIViewController {
         
         return documentsDirectory!;
     }
+    
+    
+    
+    @IBAction func transitionSelected(sender: AnyObject) {
+        useCrossFadeTransition = !useCrossFadeTransition;
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
