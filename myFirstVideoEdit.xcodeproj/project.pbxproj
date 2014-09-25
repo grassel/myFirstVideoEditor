@@ -17,6 +17,19 @@
 		C66C1BD019D0471E00847669 /* myFirstVideoEditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BCF19D0471E00847669 /* myFirstVideoEditTests.swift */; };
 		C66C1BDA19D049F600847669 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C1BD919D049F600847669 /* AVFoundation.framework */; };
 		C66C1BDC19D04A1300847669 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C1BDB19D04A1300847669 /* UIKit.framework */; };
+		C679D02D19D47523002E8E08 /* APLCustomVideoCompositionInstruction.m in Sources */ = {isa = PBXBuildFile; fileRef = C679D02A19D47523002E8E08 /* APLCustomVideoCompositionInstruction.m */; };
+		C679D02E19D47523002E8E08 /* APLCustomVideoCompositor.m in Sources */ = {isa = PBXBuildFile; fileRef = C679D02C19D47523002E8E08 /* APLCustomVideoCompositor.m */; };
+		C679D03619D4755B002E8E08 /* APLOpenGLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = C679D03119D4755B002E8E08 /* APLOpenGLRenderer.m */; };
+		C679D03719D4755B002E8E08 /* APLDiagonalWipeRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = C679D03319D4755B002E8E08 /* APLDiagonalWipeRenderer.m */; };
+		C679D03819D4755B002E8E08 /* APLCrossDissolveRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = C679D03519D4755B002E8E08 /* APLCrossDissolveRenderer.m */; };
+		C679D03A19D475A9002E8E08 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C679D03919D475A9002E8E08 /* OpenGLES.framework */; };
+		C679D03C19D475DD002E8E08 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C679D03B19D475DD002E8E08 /* MobileCoreServices.framework */; };
+		C679D03E19D475E5002E8E08 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C679D03D19D475E5002E8E08 /* AssetsLibrary.framework */; };
+		C679D04019D475F2002E8E08 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C679D03F19D475F2002E8E08 /* QuartzCore.framework */; };
+		C679D04219D475FB002E8E08 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C679D04119D475FB002E8E08 /* CoreVideo.framework */; };
+		C679D04419D47607002E8E08 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C679D04319D47607002E8E08 /* CoreGraphics.framework */; };
+		C679D04619D47619002E8E08 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C679D04519D47619002E8E08 /* Foundation.framework */; };
+		C679D04919D476F8002E8E08 /* myFirstVideoEditor-Bridging-Header.m in Sources */ = {isa = PBXBuildFile; fileRef = C679D04819D476F8002E8E08 /* myFirstVideoEditor-Bridging-Header.m */; };
 		C691336519D2E09E00C347E5 /* VideoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691336419D2E09E00C347E5 /* VideoPicker.swift */; };
 		C691336719D2F0B700C347E5 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691336619D2F0B700C347E5 /* Model.swift */; };
 /* End PBXBuildFile section */
@@ -47,6 +60,24 @@
 		C66C1BD919D049F600847669 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C66C1BDB19D04A1300847669 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C66C1BDF19D06A1C00847669 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		C679D02919D47523002E8E08 /* APLCustomVideoCompositionInstruction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APLCustomVideoCompositionInstruction.h; sourceTree = "<group>"; };
+		C679D02A19D47523002E8E08 /* APLCustomVideoCompositionInstruction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APLCustomVideoCompositionInstruction.m; sourceTree = "<group>"; };
+		C679D02B19D47523002E8E08 /* APLCustomVideoCompositor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APLCustomVideoCompositor.h; sourceTree = "<group>"; };
+		C679D02C19D47523002E8E08 /* APLCustomVideoCompositor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APLCustomVideoCompositor.m; sourceTree = "<group>"; };
+		C679D03019D4755B002E8E08 /* APLOpenGLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APLOpenGLRenderer.h; sourceTree = "<group>"; };
+		C679D03119D4755B002E8E08 /* APLOpenGLRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APLOpenGLRenderer.m; sourceTree = "<group>"; };
+		C679D03219D4755B002E8E08 /* APLDiagonalWipeRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APLDiagonalWipeRenderer.h; sourceTree = "<group>"; };
+		C679D03319D4755B002E8E08 /* APLDiagonalWipeRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APLDiagonalWipeRenderer.m; sourceTree = "<group>"; };
+		C679D03419D4755B002E8E08 /* APLCrossDissolveRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APLCrossDissolveRenderer.h; sourceTree = "<group>"; };
+		C679D03519D4755B002E8E08 /* APLCrossDissolveRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APLCrossDissolveRenderer.m; sourceTree = "<group>"; };
+		C679D03919D475A9002E8E08 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		C679D03B19D475DD002E8E08 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		C679D03D19D475E5002E8E08 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		C679D03F19D475F2002E8E08 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C679D04119D475FB002E8E08 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		C679D04319D47607002E8E08 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		C679D04519D47619002E8E08 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C679D04819D476F8002E8E08 /* myFirstVideoEditor-Bridging-Header.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "myFirstVideoEditor-Bridging-Header.m"; sourceTree = "<group>"; };
 		C691336419D2E09E00C347E5 /* VideoPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPicker.swift; sourceTree = "<group>"; };
 		C691336619D2F0B700C347E5 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -56,9 +87,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C585C32C19D089D500DEF038 /* CoreMedia.framework in Frameworks */,
-				C66C1BDC19D04A1300847669 /* UIKit.framework in Frameworks */,
+				C679D04419D47607002E8E08 /* CoreGraphics.framework in Frameworks */,
+				C679D04019D475F2002E8E08 /* QuartzCore.framework in Frameworks */,
 				C66C1BDA19D049F600847669 /* AVFoundation.framework in Frameworks */,
+				C585C32C19D089D500DEF038 /* CoreMedia.framework in Frameworks */,
+				C679D04619D47619002E8E08 /* Foundation.framework in Frameworks */,
+				C679D04219D475FB002E8E08 /* CoreVideo.framework in Frameworks */,
+				C679D03E19D475E5002E8E08 /* AssetsLibrary.framework in Frameworks */,
+				C679D03C19D475DD002E8E08 /* MobileCoreServices.framework in Frameworks */,
+				C679D03A19D475A9002E8E08 /* OpenGLES.framework in Frameworks */,
+				C66C1BDC19D04A1300847669 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,10 +113,7 @@
 		C66C1BAB19D0471E00847669 = {
 			isa = PBXGroup;
 			children = (
-				C585C32B19D089D500DEF038 /* CoreMedia.framework */,
-				C66C1BDF19D06A1C00847669 /* MediaPlayer.framework */,
-				C66C1BDB19D04A1300847669 /* UIKit.framework */,
-				C66C1BD919D049F600847669 /* AVFoundation.framework */,
+				C679D04719D476A8002E8E08 /* Frameworks */,
 				C66C1BB619D0471E00847669 /* myFirstVideoEdit */,
 				C66C1BCC19D0471E00847669 /* myFirstVideoEditTests */,
 				C66C1BB519D0471E00847669 /* Products */,
@@ -97,6 +132,7 @@
 		C66C1BB619D0471E00847669 /* myFirstVideoEdit */ = {
 			isa = PBXGroup;
 			children = (
+				C682444219D4712900BA19D1 /* APLCustomCompositors */,
 				C66C1BBD19D0471E00847669 /* Main.storyboard */,
 				C66C1BB919D0471E00847669 /* AppDelegate.swift */,
 				C66C1BBB19D0471E00847669 /* MainScreenViewController.swift */,
@@ -106,6 +142,7 @@
 				C66C1BC019D0471E00847669 /* Images.xcassets */,
 				C66C1BC219D0471E00847669 /* LaunchScreen.xib */,
 				C66C1BB719D0471E00847669 /* Supporting Files */,
+				C679D04819D476F8002E8E08 /* myFirstVideoEditor-Bridging-Header.m */,
 			);
 			path = myFirstVideoEdit;
 			sourceTree = "<group>";
@@ -133,6 +170,49 @@
 				C66C1BCE19D0471E00847669 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C679D02F19D47537002E8E08 /* APLOPenGLRenderers */ = {
+			isa = PBXGroup;
+			children = (
+				C679D03019D4755B002E8E08 /* APLOpenGLRenderer.h */,
+				C679D03119D4755B002E8E08 /* APLOpenGLRenderer.m */,
+				C679D03219D4755B002E8E08 /* APLDiagonalWipeRenderer.h */,
+				C679D03319D4755B002E8E08 /* APLDiagonalWipeRenderer.m */,
+				C679D03419D4755B002E8E08 /* APLCrossDissolveRenderer.h */,
+				C679D03519D4755B002E8E08 /* APLCrossDissolveRenderer.m */,
+			);
+			name = APLOPenGLRenderers;
+			sourceTree = "<group>";
+		};
+		C679D04719D476A8002E8E08 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C679D04519D47619002E8E08 /* Foundation.framework */,
+				C679D04319D47607002E8E08 /* CoreGraphics.framework */,
+				C679D04119D475FB002E8E08 /* CoreVideo.framework */,
+				C679D03F19D475F2002E8E08 /* QuartzCore.framework */,
+				C679D03D19D475E5002E8E08 /* AssetsLibrary.framework */,
+				C679D03B19D475DD002E8E08 /* MobileCoreServices.framework */,
+				C679D03919D475A9002E8E08 /* OpenGLES.framework */,
+				C585C32B19D089D500DEF038 /* CoreMedia.framework */,
+				C66C1BDF19D06A1C00847669 /* MediaPlayer.framework */,
+				C66C1BDB19D04A1300847669 /* UIKit.framework */,
+				C66C1BD919D049F600847669 /* AVFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C682444219D4712900BA19D1 /* APLCustomCompositors */ = {
+			isa = PBXGroup;
+			children = (
+				C679D02F19D47537002E8E08 /* APLOPenGLRenderers */,
+				C679D02919D47523002E8E08 /* APLCustomVideoCompositionInstruction.h */,
+				C679D02A19D47523002E8E08 /* APLCustomVideoCompositionInstruction.m */,
+				C679D02B19D47523002E8E08 /* APLCustomVideoCompositor.h */,
+				C679D02C19D47523002E8E08 /* APLCustomVideoCompositor.m */,
+			);
+			name = APLCustomCompositors;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -236,11 +316,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C679D02D19D47523002E8E08 /* APLCustomVideoCompositionInstruction.m in Sources */,
 				C691336519D2E09E00C347E5 /* VideoPicker.swift in Sources */,
 				C601B6CD19D301FA001BF575 /* MovieExporter.swift in Sources */,
 				C66C1BBC19D0471E00847669 /* MainScreenViewController.swift in Sources */,
+				C679D03819D4755B002E8E08 /* APLCrossDissolveRenderer.m in Sources */,
+				C679D04919D476F8002E8E08 /* myFirstVideoEditor-Bridging-Header.m in Sources */,
 				C66C1BBA19D0471E00847669 /* AppDelegate.swift in Sources */,
+				C679D02E19D47523002E8E08 /* APLCustomVideoCompositor.m in Sources */,
 				C691336719D2F0B700C347E5 /* Model.swift in Sources */,
+				C679D03619D4755B002E8E08 /* APLOpenGLRenderer.m in Sources */,
+				C679D03719D4755B002E8E08 /* APLDiagonalWipeRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +457,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/grassel/iOSDevelopment/myFirstVideoEditor/myFirstVideoEdit/myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -385,6 +472,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/grassel/iOSDevelopment/myFirstVideoEditor/myFirstVideoEdit/myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
