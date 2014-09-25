@@ -40,14 +40,49 @@ class MainScreenViewController: UIViewController {
     var videoPicker : VideoPicker!
     var movieExporter : MovieExporter!
     var model : Model!;
-    var videoAddedSinceLastExport : Bool = false;
+    
+    var videoAddedSinceLastExport : Bool = false {
+        didSet {
+            if oldValue != videoAddedSinceLastExport {
+                updateToolbarButtonStates()
+            }
+        }
+    }
+    
+    var isExporting : Bool = false {
+        didSet {
+            if oldValue != isExporting {
+                updateToolbarButtonStates()
+                updateWaitIndicator();
+            }
+        }
+    }
+    
+    var clipsCount : Int {
+        get {
+            return model.movieCount;
+        }
+    }
+    
+    var clipsCountMax : Int {
+        get {
+            return model.movieCountMax
+        }
+    }
+
+    func addMovie(#originalMediaUrl: NSURL, editedMediaUrl : NSURL) {
+        model.addMovie(originalMediaUrl: originalMediaUrl, editedMediaUrl: editedMediaUrl)
+        videoAddedSinceLastExport = true;
+        updateToolbarButtonStates();
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         model = Model();
         videoAddedSinceLastExport = false;
-
+        isExporting = false;
+        
         movieExporter = MovieExporter(myViewcontroller: self);
         
         movieThumbsImageViews = [
@@ -67,23 +102,28 @@ class MainScreenViewController: UIViewController {
     }
 
     override func viewWillAppear(animated: Bool) {
-        updateToolbarButtonStates();
         waitIndicator.hidesWhenStopped = true;
-        waitIndicator.stopAnimating()
         waitIndicator.layer.zPosition = 9999; // always on top
+        updateToolbarButtonStates();
+        updateWaitIndicator();
     }
     
     func updateToolbarButtonStates() {
-        addVideoButton.enabled = (model.movieCount < model.movieCountMax);
-        exportButton.enabled = videoAddedSinceLastExport && (model.movieCount >= 2);
-        clearButton.enabled = (model.movieCount > 0);
+        addVideoButton.enabled = (!isExporting && model.movieCount < model.movieCountMax);
+        exportButton.enabled = !isExporting &&  videoAddedSinceLastExport && (model.movieCount >= 2);
+        clearButton.enabled = !isExporting && (model.movieCount > 0);
     }
     
+    func updateWaitIndicator() {
+        if isExporting {
+             waitIndicator.startAnimating()
+        } else {
+             waitIndicator.stopAnimating()
+        }
+    }
     /*
     select a new video using UIImagePicker
     and append it to movieUrls
-    
-     FIXME: This functionality should be moved to an own class.
     */
     @IBAction func addVideoSelected(sender: AnyObject) {
         if (videoPicker == nil) {
@@ -93,25 +133,22 @@ class MainScreenViewController: UIViewController {
     }
     
     func addMovie(#originalMediaUrl: NSURL, editedMediaUrl : NSURL, thumbnail: UIImage)  {
-        if model.movieCount < model.movieCountMax {
-            movieThumbsImages[model.movieCount] = thumbnail;
-            movieThumbsImageViews[model.movieCount].image  =
-                movieThumbsImages[model.movieCount];
+        if clipsCount < clipsCountMax {
+            movieThumbsImages[clipsCount] = thumbnail;
+            movieThumbsImageViews[clipsCount].image  =
+                movieThumbsImages[clipsCount];
             
-            videoAddedSinceLastExport = true;
-            model.addMovie(originalMediaUrl: originalMediaUrl, editedMediaUrl: editedMediaUrl)
+            addMovie(originalMediaUrl: originalMediaUrl, editedMediaUrl: editedMediaUrl)
         }
-        updateToolbarButtonStates();
     }
     
     @IBAction func clearClipsSelected(sender: AnyObject) {
         model = Model();
         for index in 0 ... model.movieCountMax-1 {
-            movieThumbsImages[index] = UIImage(named: "Image") // from assets
+            movieThumbsImages[index] = UIImage(named: "placeholderBlack") // from image assets
             movieThumbsImageViews[index].image = movieThumbsImages[index];
         }
         videoAddedSinceLastExport = false;
-        updateToolbarButtonStates();
     }
     
     /*
@@ -120,17 +157,15 @@ class MainScreenViewController: UIViewController {
     */
     
     @IBAction func exportMovieSelected(sender: AnyObject) {
-        waitIndicator.startAnimating()
+        isExporting = true;
         // FIXME: toggle two implementation options
    //     movieExporter.exportVideo(applicationDocumentsDirectory());
         movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());
     }
     
     func movieExportCompletedOK(url : NSURL) {
-        self.waitIndicator.stopAnimating()
+        isExporting = false;
         videoAddedSinceLastExport = false;
-        updateToolbarButtonStates();
-        
         
         playMovie(url);
     }

@@ -20,7 +20,7 @@
             </objects>
             <point key="canvasLocation" x="-762" y="419"/>
         </scene>
-        <!--Main Screen View Controller-->
+        <!--Video Editor-->
         <scene sceneID="SIb-ym-jZs">
             <objects>
                 <viewController id="dSY-ef-eQv" customClass="MainScreenViewController" customModule="myFirstVideoEdit" customModuleProvider="target" sceneMemberID="viewController">
@@ -32,6 +32,35 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Eqg-ZQ-baQ" userLabel="viewForMoviePlayer">
+                                <rect key="frame" x="0.0" y="64" width="320" height="379"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="j8c-X8-gd4">
+                                        <rect key="frame" x="141" y="171" width="37" height="37"/>
+                                        <rect key="contentStretch" x="1" y="1" width="1" height="1"/>
+                                        <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W4L-Jf-kjP" userLabel="thumbsContainer">
+                                <rect key="frame" x="0.0" y="446" width="320" height="77"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="placeholderBlack" translatesAutoresizingMaskIntoConstraints="NO" id="CQF-Ri-apH">
+                                        <rect key="frame" x="8" y="5" width="67" height="64"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="placeholderBlack" translatesAutoresizingMaskIntoConstraints="NO" id="Y7L-OZ-00o">
+                                        <rect key="frame" x="87" y="5" width="67" height="64"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="placeholderBlack" translatesAutoresizingMaskIntoConstraints="NO" id="kQW-Rh-YNp">
+                                        <rect key="frame" x="245" y="5" width="67" height="64"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="placeholderBlack" translatesAutoresizingMaskIntoConstraints="NO" id="ixH-Fk-713">
+                                        <rect key="frame" x="166" y="5" width="67" height="64"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="29f-bv-H3i">
                                 <rect key="frame" x="0.0" y="523" width="320" height="44"/>
                                 <items>
@@ -54,32 +83,10 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="CQF-Ri-apH">
-                                <rect key="frame" x="16" y="451" width="67" height="64"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="Y7L-OZ-00o">
-                                <rect key="frame" x="91" y="451" width="67" height="64"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="ixH-Fk-713">
-                                <rect key="frame" x="166" y="451" width="67" height="64"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="kQW-Rh-YNp">
-                                <rect key="frame" x="241" y="451" width="67" height="64"/>
-                            </imageView>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W4L-Jf-kjP">
-                                <rect key="frame" x="0.0" y="64" width="320" height="379"/>
-                                <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="j8c-X8-gd4">
-                                        <rect key="frame" x="140" y="180" width="37" height="37"/>
-                                        <rect key="contentStretch" x="1" y="1" width="1" height="1"/>
-                                        <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    </activityIndicatorView>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Video Editor" id="7NF-to-lo1"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
@@ -90,7 +97,7 @@
                         <outlet property="movieThumbImage2" destination="Y7L-OZ-00o" id="v3b-X9-BBT"/>
                         <outlet property="movieThumbImage3" destination="ixH-Fk-713" id="Jyb-qe-GNR"/>
                         <outlet property="movieThumbImage4" destination="kQW-Rh-YNp" id="NIC-pP-XQa"/>
-                        <outlet property="viewForMovie" destination="W4L-Jf-kjP" id="lEW-Xp-R13"/>
+                        <outlet property="viewForMovie" destination="Eqg-ZQ-baQ" id="6T9-yF-FNb"/>
                         <outlet property="waitIndicator" destination="j8c-X8-gd4" id="t2z-Zj-YFQ"/>
                     </connections>
                 </viewController>
@@ -100,6 +107,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Image" width="89" height="87"/>
+        <image name="placeholderBlack" width="89" height="87"/>
     </resources>
 </document>
