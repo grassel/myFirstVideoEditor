@@ -21,11 +21,12 @@ class MainScreenViewController: UIViewController {
     @IBOutlet weak var waitIndicator: UIActivityIndicatorView!
 
     // Storyboard does not allow us to add this MoviePlayer directly.
-    // Insted, we only create a placeholder view  self.viewForMovie 
+    // Insted, we only create a placeholder view  self.viewForMovie
     // in story board and add the MoviePlayer view programmatically
     @IBOutlet weak var viewForMovie: UIView!
 
     @IBOutlet weak var addVideoButton: UIBarButtonItem!
+    @IBOutlet weak var clearButton: UIBarButtonItem!
     @IBOutlet weak var exportButton: UIBarButtonItem!
 
     // FIXME: use AVPlayerItem instead of MPMoviePlayer? -
@@ -39,11 +40,14 @@ class MainScreenViewController: UIViewController {
     var videoPicker : VideoPicker!
     var movieExporter : MovieExporter!
     var model : Model!;
+    var videoAddedSinceLastExport : Bool = false;
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         model = Model();
+        videoAddedSinceLastExport = false;
+
         movieExporter = MovieExporter(myViewcontroller: self);
         
         movieThumbsImageViews = [
@@ -63,11 +67,16 @@ class MainScreenViewController: UIViewController {
     }
 
     override func viewWillAppear(animated: Bool) {
-        addVideoButton.enabled = (model.movieCount < model.movieCountMax);
-        exportButton.enabled = (model.movieCount >= 2);
+        updateToolbarButtonStates();
         waitIndicator.hidesWhenStopped = true;
         waitIndicator.stopAnimating()
         waitIndicator.layer.zPosition = 9999; // always on top
+    }
+    
+    func updateToolbarButtonStates() {
+        addVideoButton.enabled = (model.movieCount < model.movieCountMax);
+        exportButton.enabled = videoAddedSinceLastExport && (model.movieCount >= 2);
+        clearButton.enabled = (model.movieCount > 0);
     }
     
     /*
@@ -89,30 +98,44 @@ class MainScreenViewController: UIViewController {
             movieThumbsImageViews[model.movieCount].image  =
                 movieThumbsImages[model.movieCount];
             
+            videoAddedSinceLastExport = true;
             model.addMovie(originalMediaUrl: originalMediaUrl, editedMediaUrl: editedMediaUrl)
         }
-        addVideoButton.enabled = (model.movieCount < model.movieCountMax);
-        exportButton.enabled = (model.movieCount >= 2);
+        updateToolbarButtonStates();
+    }
+    
+    @IBAction func clearClipsSelected(sender: AnyObject) {
+        model = Model();
+        for index in 0 ... model.movieCountMax-1 {
+            movieThumbsImages[index] = UIImage(named: "Image") // from assets
+            movieThumbsImageViews[index].image = movieThumbsImages[index];
+        }
+        videoAddedSinceLastExport = false;
+        updateToolbarButtonStates();
     }
     
     /*
-      compositing the movie using AVFoundation AVMutableComposition 
-        and using QuartzCore for fade animations (could be done also with
-        AVMutableVideoCompositionInstruction, but for the sake of study)
-        and exportng to file using AVAssetExportSession
+      compositing the movie using AVFoundation
+        and  QuartzCore for fade animations
     */
     
     @IBAction func exportMovieSelected(sender: AnyObject) {
         waitIndicator.startAnimating()
+        // FIXME: toggle two implementation options
    //     movieExporter.exportVideo(applicationDocumentsDirectory());
-        movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());3
+        movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());
     }
     
-    
+    func movieExportCompletedOK(url : NSURL) {
+        self.waitIndicator.stopAnimating()
+        videoAddedSinceLastExport = false;
+        updateToolbarButtonStates();
+        
+        
+        playMovie(url);
+    }
     
     func playMovie(url : NSURL) {
-        self.waitIndicator.stopAnimating()
-
         println("playMovie: url=\(url)");
         moviePlayer.contentURL = url
         moviePlayer.movieSourceType = MPMovieSourceType.File

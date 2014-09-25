@@ -295,7 +295,7 @@ class MovieExporter: NSObject {
             }
             
             NSOperationQueue.mainQueue().addOperationWithBlock(){
-                self.myViewcontroller.playMovie(exporter.outputURL);
+                self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
             }
         })
     }
@@ -504,7 +504,7 @@ class MovieExporter: NSObject {
             }
             
             NSOperationQueue.mainQueue().addOperationWithBlock(){
-                self.myViewcontroller.playMovie(exporter.outputURL);
+                self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
             }
         })
     }

@@ -35,13 +35,19 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="29f-bv-H3i">
                                 <rect key="frame" x="0.0" y="523" width="320" height="44"/>
                                 <items>
-                                    <barButtonItem title="add video" id="nmT-kK-97p">
+                                    <barButtonItem title="add clip" id="nmT-kK-97p">
                                         <connections>
                                             <action selector="addVideoSelected:" destination="dSY-ef-eQv" id="z7g-my-l4U"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="HJU-we-mgD"/>
+                                    <barButtonItem title="clear" id="XaA-be-pRC">
+                                        <connections>
+                                            <action selector="clearClipsSelected:" destination="dSY-ef-eQv" id="jna-xC-Rgx"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="xqF-fx-1OB"/>
-                                    <barButtonItem title="export" id="4AS-uF-I9r">
+                                    <barButtonItem title="export movie" id="4AS-uF-I9r">
                                         <connections>
                                             <action selector="exportMovieSelected:" destination="dSY-ef-eQv" id="tCo-6V-bDz"/>
                                         </connections>
@@ -78,6 +84,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="addVideoButton" destination="nmT-kK-97p" id="YD9-8Y-dsM"/>
+                        <outlet property="clearButton" destination="XaA-be-pRC" id="hNY-tf-DMJ"/>
                         <outlet property="exportButton" destination="4AS-uF-I9r" id="w9F-QD-rLa"/>
                         <outlet property="movieThumbImage1" destination="CQF-Ri-apH" id="eQl-vc-eGl"/>
                         <outlet property="movieThumbImage2" destination="Y7L-OZ-00o" id="v3b-X9-BBT"/>
