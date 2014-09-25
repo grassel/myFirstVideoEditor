@@ -7,3 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#import "APLOpenGLRenderer.h"
+#import "APLDiagonalWipeRenderer.h"
+#import "APLCrossDissolveRenderer.h"
+#import "APLCustomVideoCompositionInstruction.h"
+#import "APLCustomVideoCompositor.h"

@@ -174,7 +174,8 @@ class MainScreenViewController: UIViewController {
     @IBAction func exportMovieSelected(sender: AnyObject) {
         isExporting = true;
         if (useCrossFadeTransition) {
-            movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());
+         //   movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());
+             movieExporter.exportVideoCrossFadeOpenGL(applicationDocumentsDirectory());
         } else {
             movieExporter.exportVideo(applicationDocumentsDirectory());
         }
