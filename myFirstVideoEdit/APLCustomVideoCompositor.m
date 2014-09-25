@@ -188,6 +188,9 @@ static Float64 factorForTimeInRange(CMTime time, CMTimeRange range) /* 0.0 -> 1.
 	
 	APLCustomVideoCompositionInstruction *currentInstruction = request.videoCompositionInstruction;
 	
+   // CMPersistentTrackID fgid = currentInstruction.foregroundTrackID;
+   // CMPersistentTrackID bgid = currentInstruction.backgroundTrackID;
+    
 	// Source pixel buffers are used as inputs while rendering the transition
 	CVPixelBufferRef foregroundSourceBuffer = [request sourceFrameByTrackID:currentInstruction.foregroundTrackID];
 	CVPixelBufferRef backgroundSourceBuffer = [request sourceFrameByTrackID:currentInstruction.backgroundTrackID];

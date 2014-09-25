@@ -654,10 +654,12 @@ class MovieExporter: NSObject {
                 if (index < myViewcontroller.model.movieCount-1) {
                     // what is this ?! = trackID is of type Int32, which is a basic type not a class. Int, though, is a class in Swift
                     // Below constructor expects an [NSObject]
-                    var trackIDs : [ Int ] = [ Int(trackVideos[index % 2].trackID), Int(trackVideos[(index+1) % 2].trackID) ]
+                    var trackIDs : [ Int ] = [ Int(trackVideos[0].trackID), Int(trackVideos[1].trackID) ]
                     
                     var videoCompositionInstructionTransition =
                     APLCustomVideoCompositionInstruction(transitionWithSourceTrackIDs: trackIDs, forTimeRange: transitionTimeranges[index]);
+                    videoCompositionInstructionTransition.foregroundTrackID = trackVideos[index % 2].trackID;
+                    videoCompositionInstructionTransition.backgroundTrackID = trackVideos[1-(index % 2)].trackID;
                     
                     // finally append to compositionVideo
                     compositionVideo.instructions.append(videoCompositionInstructionTransition);

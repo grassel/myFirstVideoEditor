@@ -73,7 +73,7 @@
 {
 	self = [super init];
 	if (self) {
-		_requiredSourceTrackIDs = sourceTrackIDs;
+        _requiredSourceTrackIDs = sourceTrackIDs;
 		_passthroughTrackID = kCMPersistentTrackID_Invalid;
 		_timeRange = timeRange;
 		_containsTweening = TRUE;
