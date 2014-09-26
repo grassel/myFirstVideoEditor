@@ -457,7 +457,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/guido/iOSProjects/myFirstVideoEditor/myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/grassel/iOSDevelopment/myFirstVideoEditor/myFirstVideoEdit/myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -472,7 +472,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/guido/iOSProjects/myFirstVideoEditor/myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/grassel/iOSDevelopment/myFirstVideoEditor/myFirstVideoEdit/myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

@@ -19,7 +19,7 @@ class MovieExporter: NSObject {
         self.myViewcontroller = myViewcontroller;
     }
     
-    func exportVideo(outputPath:String) {
+    func exportVideoRampInOut(outputPath:String) {
         if (myViewcontroller.model.movieCount < 2) {
             println("at least two movies needed for merging");
             return;

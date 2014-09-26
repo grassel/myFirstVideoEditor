@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "updateToolbarButtonStates.png"
+      "filename" : "crossfadeTransitionButtonImage.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "updateToolbarButtonStates-1.png"
+      "filename" : "crossfadeTransitionButtonImage-1.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "updateToolbarButtonStates-2.png"
+      "filename" : "crossfadeTransitionButtonImage-2.png"
     }
   ],
   "info" : {

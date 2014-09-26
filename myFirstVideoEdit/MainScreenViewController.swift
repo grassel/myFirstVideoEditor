@@ -61,10 +61,24 @@ class MainScreenViewController: UIViewController {
         }
     }
     
-    var useCrossFadeTransition : Bool = true {
+    enum transitionStyleEnum {
+        case rampInOut
+        case crossFade
+        case crossDisolve
+    };
+    
+    var transitionStyle : transitionStyleEnum = transitionStyleEnum.crossFade {
         didSet {
-            if oldValue != useCrossFadeTransition {
-                var image = useCrossFadeTransition ? UIImage(named: "transitionButtonImage") : UIImage(named: "cutTransitionButtonImage");
+            if oldValue != transitionStyle {
+                var image : UIImage!
+                switch transitionStyle{
+                case transitionStyleEnum.rampInOut:
+                    image = UIImage(named: "cutTransitionButtonImage");
+                case transitionStyleEnum.crossFade:
+                    image = UIImage(named: "crossFadeTransitionButtonImage")
+                case transitionStyleEnum.crossDisolve:
+                    image = UIImage(named: "crossDisolveTransitionButtonImage")
+                }
                 transitionIndicatorButton1?.setBackgroundImage(image, forState: .Normal)
                 transitionIndicatorButton2?.setBackgroundImage(image, forState: .Normal)
                 transitionIndicatorButton3?.setBackgroundImage(image, forState: .Normal)
@@ -114,6 +128,8 @@ class MainScreenViewController: UIViewController {
         moviePlayer.controlStyle = MPMovieControlStyle.Embedded; // Controls for an embedded view are displayed. The controls include a start/pause button, a scrubber bar, and a button for toggling between fullscreen and embedded display modes.
 
         self.viewForMovie.addSubview(self.moviePlayer.view)
+        
+        transitionStyle = transitionStyleEnum.crossDisolve
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -173,13 +189,16 @@ class MainScreenViewController: UIViewController {
     
     @IBAction func exportMovieSelected(sender: AnyObject) {
         isExporting = true;
-        if (useCrossFadeTransition) {
-         //   movieExporter.exportVideoCrossFade(applicationDocumentsDirectory());
-             movieExporter.exportVideoCrossFadeOpenGL(applicationDocumentsDirectory());
-        } else {
-            movieExporter.exportVideo(applicationDocumentsDirectory());
+        switch transitionStyle{
+        case transitionStyleEnum.rampInOut:
+            movieExporter.exportVideoRampInOut(applicationDocumentsDirectory())
+        case transitionStyleEnum.crossFade:
+            movieExporter.exportVideoCrossFade(applicationDocumentsDirectory())
+        case transitionStyleEnum.crossDisolve:
+              movieExporter.exportVideoCrossFadeOpenGL(applicationDocumentsDirectory());
         }
     }
+
 
     func movieExportCompletedOK(url : NSURL) {
         isExporting = false;
@@ -217,7 +236,14 @@ class MainScreenViewController: UIViewController {
     
     
     @IBAction func transitionSelected(sender: AnyObject) {
-        useCrossFadeTransition = !useCrossFadeTransition;
+        switch transitionStyle{
+        case transitionStyleEnum.rampInOut:
+            transitionStyle = transitionStyleEnum.crossFade
+        case transitionStyleEnum.crossFade:
+            transitionStyle = transitionStyleEnum.crossDisolve
+        case transitionStyleEnum.crossDisolve:
+            transitionStyle = transitionStyleEnum.rampInOut
+        }
     }
     
     

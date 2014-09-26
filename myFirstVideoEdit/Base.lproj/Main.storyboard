@@ -46,24 +46,6 @@
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W4L-Jf-kjP" userLabel="thumbsContainer">
                                 <rect key="frame" x="0.0" y="446" width="320" height="77"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zJ7-fU-FLv">
-                                        <rect key="frame" x="149" y="22" width="24" height="30"/>
-                                        <state key="normal" backgroundImage="transitionButtonImage">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="transitionSelected:" destination="dSY-ef-eQv" eventType="touchUpInside" id="4EK-RS-1DV"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5oQ-hs-egR">
-                                        <rect key="frame" x="228" y="22" width="24" height="30"/>
-                                        <state key="normal" backgroundImage="transitionButtonImage">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="transitionSelected:" destination="dSY-ef-eQv" eventType="touchUpInside" id="W94-7X-hUS"/>
-                                        </connections>
-                                    </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="placeholderBlack" translatesAutoresizingMaskIntoConstraints="NO" id="CQF-Ri-apH">
                                         <rect key="frame" x="8" y="5" width="67" height="64"/>
                                     </imageView>
@@ -78,9 +60,27 @@
                                     </imageView>
                                     <button opaque="NO" contentMode="center" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ela-Yl-xp8">
                                         <rect key="frame" x="68" y="22" width="26" height="30"/>
-                                        <state key="normal" backgroundImage="transitionButtonImage"/>
+                                        <state key="normal" backgroundImage="crossFadeTransitionButtonImage"/>
                                         <connections>
                                             <action selector="transitionSelected:" destination="dSY-ef-eQv" eventType="touchUpInside" id="mqp-Kb-P7Z"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5oQ-hs-egR">
+                                        <rect key="frame" x="228" y="22" width="24" height="30"/>
+                                        <state key="normal" backgroundImage="crossFadeTransitionButtonImage">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="transitionSelected:" destination="dSY-ef-eQv" eventType="touchUpInside" id="W94-7X-hUS"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zJ7-fU-FLv">
+                                        <rect key="frame" x="148" y="22" width="24" height="30"/>
+                                        <state key="normal" backgroundImage="crossFadeTransitionButtonImage">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="transitionSelected:" destination="dSY-ef-eQv" eventType="touchUpInside" id="4EK-RS-1DV"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -135,7 +135,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="crossFadeTransitionButtonImage" width="40" height="41"/>
         <image name="placeholderBlack" width="89" height="87"/>
-        <image name="transitionButtonImage" width="40" height="41"/>
     </resources>
 </document>
