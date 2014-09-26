@@ -448,7 +448,7 @@ class MovieExporter: NSObject {
         var compositeDuration : CMTime  = CMTimeSubtract(trackEndTime, trackStartTimes[0]);
         println ("compositeDuration \(CMTimeGetSeconds(compositeDuration))");
         
-        
+        // size of the video composition
         var videoSize : CGSize!
         
         // 'composition': the final composition, consisting of video and audio track.
