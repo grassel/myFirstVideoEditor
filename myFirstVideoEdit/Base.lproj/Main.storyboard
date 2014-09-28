@@ -92,6 +92,7 @@
                                     <barButtonItem title="add clip" id="nmT-kK-97p">
                                         <connections>
                                             <action selector="addVideoSelected:" destination="dSY-ef-eQv" id="z7g-my-l4U"/>
+                                            <segue destination="178-QV-UDr" kind="presentation" id="Jqn-3O-8LT"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="HJU-we-mgD"/>
@@ -132,6 +133,51 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="clo-8T-WE2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-82" y="424"/>
+        </scene>
+        <!--Camera Role-->
+        <scene sceneID="Fbk-zh-JYp">
+            <objects>
+                <tableViewController storyboardIdentifier="CameraRollIte" title="Camera Role" useStoryboardIdentifierAsRestorationIdentifier="YES" id="178-QV-UDr" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="PcQ-Gl-sch">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CameraRoleUITable" textLabel="pYq-vy-kb1" detailTextLabel="gnz-fd-qIY" imageView="cme-Nz-oP9" style="IBUITableViewCellStyleSubtitle" id="ogp-bf-9dz">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="CameraRoleRestaurationID" tableViewCell="ogp-bf-9dz" id="D0M-0l-LIj">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Video" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pYq-vy-kb1">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="computing duration" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gnz-fd-qIY">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" image="placeholderBlack" id="cme-Nz-oP9">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </imageView>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="178-QV-UDr" id="Xwj-kc-lPU"/>
+                            <outlet property="delegate" destination="178-QV-UDr" id="OmK-gG-cuu"/>
+                        </connections>
+                    </tableView>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QkN-J7-PLM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="353" y="424"/>
         </scene>
     </scenes>
     <resources>

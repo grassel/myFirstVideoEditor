@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 
-class myFirstVideoEditTests: XCTestCase {
+class myFirstVideoEditTests: XCTestCase, CameraModelDelegate {
     
     override func setUp() {
         super.setUp()
@@ -21,10 +21,37 @@ class myFirstVideoEditTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
+    var cameraModel : CameraRollModel!;
+    
+    var thumbsLoadedExpectation : XCTestExpectation!;
+    
+    func testLoadThumbsOfAllVideosInCameraRoll() {
         // This is an example of a functional test case.
         XCTAssert(true, "Pass")
+        
+        cameraModel = CameraRollModel(delegate: self);
+        cameraModel.requestAccessToPhotoLibraryAsync();
+        
+        thumbsLoadedExpectation = self.expectationWithDescription("fetch all thumbnails");
+        self.waitForExpectationsWithTimeout(60.0, handler: nil);
     }
+    
+    func requestAccessToPhotoLibraryGranted() {
+        XCTAssert(cameraModel != nil, "requestAccessToPhotoLibraryGranted: cameraModel != nil");
+        
+        cameraModel!.requestAllVideos();
+        var thumbsToload = cameraModel!.count;
+        for index in 0 ... cameraModel!.count-1 {
+            cameraModel.fetchAssetAtIndexAsync(index, placeholderImage: UIImage(named: "placeholderBlack"), handler: { (indexBack : Int, imageBack : UIImage) -> Void in
+                println("thumbnail image for video \(indexBack), \(imageBack.description).");
+                thumbsToload--;
+                if (thumbsToload == 0) {
+                    self.thumbsLoadedExpectation.fulfill();
+                }
+            })
+        }
+    }
+    
     
     func testPerformanceExample() {
         // This is an example of a performance test case.
@@ -32,5 +59,4 @@ class myFirstVideoEditTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-    
 }
