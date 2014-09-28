@@ -24,6 +24,14 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
+    override func viewDidAppear(animated: Bool) {
+        cameraRollModel.requestAccessToPhotoLibraryAsync();
+    }
+    
+    func requestAccessToPhotoLibraryGranted() {
+        cameraRollModel.requestAllVideos();
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -45,11 +53,20 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("CameraRoleRestaurationID", forIndexPath: indexPath) as UITableViewCell
 
+        var rowIndex = indexPath.row;
+        
         // Configure the cell...
         // Increment the cell's tag
         var currentTag : NSInteger = cell.tag + 1;
         cell.tag = currentTag;
-
+        
+        cameraRollModel.fetchAssetAtIndexAsync(rowIndex,
+            placeholderImage: UIImage(named: "placeholderBlack"), handler: { (indexBack : Int, imageResult : UIImage) -> Void in
+                // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
+                if (cell.tag == currentTag) {
+                    cell.imageView?.image  = imageResult;
+                }
+        });
 
         return cell
     }

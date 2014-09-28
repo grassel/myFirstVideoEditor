@@ -15,6 +15,7 @@
 		C5AB95CF19D82962001291E3 /* CameraRollTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51292E319D7319C00C65FCB /* CameraRollTableViewController.swift */; };
 		C5AB95D119D83397001291E3 /* CameraRollModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AB95D019D83397001291E3 /* CameraRollModelDelegate.swift */; };
 		C5AB95D219D83397001291E3 /* CameraRollModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AB95D019D83397001291E3 /* CameraRollModelDelegate.swift */; };
+		C5AB95D819D88F00001291E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BB919D0471E00847669 /* AppDelegate.swift */; };
 		C601B6CD19D301FA001BF575 /* MovieExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C601B6CC19D301FA001BF575 /* MovieExporter.swift */; };
 		C66C1BBA19D0471E00847669 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BB919D0471E00847669 /* AppDelegate.swift */; };
 		C66C1BBC19D0471E00847669 /* MainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BBB19D0471E00847669 /* MainScreenViewController.swift */; };
@@ -361,6 +362,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5AB95D819D88F00001291E3 /* AppDelegate.swift in Sources */,
 				C66C1BD019D0471E00847669 /* myFirstVideoEditTests.swift in Sources */,
 				C5AB95CF19D82962001291E3 /* CameraRollTableViewController.swift in Sources */,
 				C5AB95D219D83397001291E3 /* CameraRollModelDelegate.swift in Sources */,
