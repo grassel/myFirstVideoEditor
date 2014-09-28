@@ -44,7 +44,6 @@ class myFirstVideoEditTests: XCTestCase, CameraModelDelegate {
         for index in 0 ... cameraModel!.count-1 {
             cameraModel.fetchAssetAtIndexAsync(index, placeholderImage: UIImage(named: "placeholderBlack"), handler: { (indexBack : Int, imageBack : UIImage) -> Void in
                 println("thumbnail image for video \(indexBack), \(imageBack.debugDescription), width x height = \(imageBack.size.width) x \(imageBack.size.height)");
-                imageBack.size.width
                 thumbsToload--;
                 if (thumbsToload == 0) {
                     self.thumbsLoadedExpectation.fulfill();
