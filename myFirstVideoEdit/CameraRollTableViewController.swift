@@ -52,13 +52,22 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
     }
 
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(tableView1: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        println ("cellForRowAtIndexPath \(indexPath.row)");
         
         // configure the cell.
         let cellID : NSString = "videoCell"; // match what's been defined in the storyboard.
-        var cellA = tableView.dequeueReusableCellWithIdentifier(cellID);
-        var cell = cellA as UITableViewCell;
-
+        var cell : UITableViewCell!;
+        var cellA : AnyObject! = tableView1.dequeueReusableCellWithIdentifier(cellID);
+        
+        if (cellA == nil) {
+            println ("cellForRowAtIndexPath: dequeueReusableCellWithIdentifier returns nil");
+            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellID)
+            cell.imageView?.image = UIImage(named: "placeholderWhite")
+            cell.textLabel?.text = "Video"
+        } else {
+            cell = cellA as UITableViewCell;
+        }
         var rowIndex = indexPath.row;
         
         // Configure the cell...
@@ -70,7 +79,11 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
             placeholderImage: UIImage(named: "placeholderBlack")!, handler: { (indexBack : Int, imageResult : UIImage) -> Void in
                 // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
                 if (cell.tag == currentTag) {
-                    cell.imageView?.image  = imageResult;
+                    dispatch_async(dispatch_get_main_queue(), {
+                        if (cell.imageView != nil) {
+                            cell.imageView!.image  = imageResult;
+                        }
+                    });
                 }
         });
 

@@ -94,6 +94,7 @@ class CameraRollModel: NSObject, PHPhotoLibraryChangeObserver {
                     var generator : AVAssetImageGenerator = AVAssetImageGenerator(asset: videoAsset);
                     generator.appliesPreferredTrackTransform = true;
                     var time : CMTime = CMTimeMake(1,2);
+                    generator.maximumSize = CGSize(width: 240, height: 160)
                     var oneRef : CGImageRef = generator.copyCGImageAtTime(time, actualTime: nil, error: nil);
                     var image : UIImage = UIImage(CGImage: oneRef)!;
                     handler(index, image);
