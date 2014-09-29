@@ -7,7 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C51292E419D7319C00C65FCB /* CameraRollTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51292E319D7319C00C65FCB /* CameraRollTableViewController.swift */; };
+		C51292E819D73AB800C65FCB /* CameraRollModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51292E719D73AB800C65FCB /* CameraRollModel.swift */; };
+		C51292EA19D73AED00C65FCB /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C51292E919D73AED00C65FCB /* Photos.framework */; };
 		C585C32C19D089D500DEF038 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C585C32B19D089D500DEF038 /* CoreMedia.framework */; };
+		C59D36E019D7FB1400545F0B /* CameraRollModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51292E719D73AB800C65FCB /* CameraRollModel.swift */; };
+		C5AB95CF19D82962001291E3 /* CameraRollTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51292E319D7319C00C65FCB /* CameraRollTableViewController.swift */; };
+		C5AB95D119D83397001291E3 /* CameraRollModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AB95D019D83397001291E3 /* CameraRollModelDelegate.swift */; };
+		C5AB95D219D83397001291E3 /* CameraRollModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AB95D019D83397001291E3 /* CameraRollModelDelegate.swift */; };
+		C5AB95D819D88F00001291E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BB919D0471E00847669 /* AppDelegate.swift */; };
 		C601B6CD19D301FA001BF575 /* MovieExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C601B6CC19D301FA001BF575 /* MovieExporter.swift */; };
 		C66C1BBA19D0471E00847669 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BB919D0471E00847669 /* AppDelegate.swift */; };
 		C66C1BBC19D0471E00847669 /* MainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BBB19D0471E00847669 /* MainScreenViewController.swift */; };
@@ -45,7 +53,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C51292E319D7319C00C65FCB /* CameraRollTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollTableViewController.swift; sourceTree = "<group>"; };
+		C51292E719D73AB800C65FCB /* CameraRollModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollModel.swift; sourceTree = "<group>"; };
+		C51292E919D73AED00C65FCB /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		C585C32B19D089D500DEF038 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		C5AB95D019D83397001291E3 /* CameraRollModelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollModelDelegate.swift; sourceTree = "<group>"; };
 		C601B6CC19D301FA001BF575 /* MovieExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieExporter.swift; sourceTree = "<group>"; };
 		C66C1BB419D0471E00847669 /* myFirstVideoEdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myFirstVideoEdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C66C1BB819D0471E00847669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -87,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C51292EA19D73AED00C65FCB /* Photos.framework in Frameworks */,
 				C679D04419D47607002E8E08 /* CoreGraphics.framework in Frameworks */,
 				C679D04019D475F2002E8E08 /* QuartzCore.framework in Frameworks */,
 				C66C1BDA19D049F600847669 /* AVFoundation.framework in Frameworks */,
@@ -110,6 +123,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C51292E219D72FC800C65FCB /* CameraRoleBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				C51292E319D7319C00C65FCB /* CameraRollTableViewController.swift */,
+				C51292E719D73AB800C65FCB /* CameraRollModel.swift */,
+				C5AB95D019D83397001291E3 /* CameraRollModelDelegate.swift */,
+			);
+			name = CameraRoleBrowser;
+			sourceTree = "<group>";
+		};
 		C66C1BAB19D0471E00847669 = {
 			isa = PBXGroup;
 			children = (
@@ -132,8 +155,9 @@
 		C66C1BB619D0471E00847669 /* myFirstVideoEdit */ = {
 			isa = PBXGroup;
 			children = (
-				C682444219D4712900BA19D1 /* APLCustomCompositors */,
 				C66C1BBD19D0471E00847669 /* Main.storyboard */,
+				C51292E219D72FC800C65FCB /* CameraRoleBrowser */,
+				C682444219D4712900BA19D1 /* APLCustomCompositors */,
 				C66C1BB919D0471E00847669 /* AppDelegate.swift */,
 				C66C1BBB19D0471E00847669 /* MainScreenViewController.swift */,
 				C691336419D2E09E00C347E5 /* VideoPicker.swift */,
@@ -188,6 +212,7 @@
 		C679D04719D476A8002E8E08 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C51292E919D73AED00C65FCB /* Photos.framework */,
 				C679D04519D47619002E8E08 /* Foundation.framework */,
 				C679D04319D47607002E8E08 /* CoreGraphics.framework */,
 				C679D04119D475FB002E8E08 /* CoreVideo.framework */,
@@ -319,10 +344,13 @@
 				C679D02D19D47523002E8E08 /* APLCustomVideoCompositionInstruction.m in Sources */,
 				C691336519D2E09E00C347E5 /* VideoPicker.swift in Sources */,
 				C601B6CD19D301FA001BF575 /* MovieExporter.swift in Sources */,
+				C5AB95D119D83397001291E3 /* CameraRollModelDelegate.swift in Sources */,
 				C66C1BBC19D0471E00847669 /* MainScreenViewController.swift in Sources */,
 				C679D03819D4755B002E8E08 /* APLCrossDissolveRenderer.m in Sources */,
+				C51292E819D73AB800C65FCB /* CameraRollModel.swift in Sources */,
 				C679D04919D476F8002E8E08 /* myFirstVideoEditor-Bridging-Header.m in Sources */,
 				C66C1BBA19D0471E00847669 /* AppDelegate.swift in Sources */,
+				C51292E419D7319C00C65FCB /* CameraRollTableViewController.swift in Sources */,
 				C679D02E19D47523002E8E08 /* APLCustomVideoCompositor.m in Sources */,
 				C691336719D2F0B700C347E5 /* Model.swift in Sources */,
 				C679D03619D4755B002E8E08 /* APLOpenGLRenderer.m in Sources */,
@@ -334,7 +362,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5AB95D819D88F00001291E3 /* AppDelegate.swift in Sources */,
 				C66C1BD019D0471E00847669 /* myFirstVideoEditTests.swift in Sources */,
+				C5AB95CF19D82962001291E3 /* CameraRollTableViewController.swift in Sources */,
+				C5AB95D219D83397001291E3 /* CameraRollModelDelegate.swift in Sources */,
+				C59D36E019D7FB1400545F0B /* CameraRollModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

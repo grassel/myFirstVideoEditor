@@ -156,12 +156,20 @@ class MainScreenViewController: UIViewController {
     select a new video using UIImagePicker
     and append it to movieUrls
     */
+    /*
     @IBAction func addVideoSelected(sender: AnyObject) {
         if (videoPicker == nil) {
             self.videoPicker = VideoPicker(viewController: self);
         }
         videoPicker.selectVideo();
     }
+    */
+    
+    @IBAction func addVideoSelected(sender: AnyObject) {
+        var vc = CameraRollTableViewController();
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     
     func addMovie(#originalMediaUrl: NSURL, editedMediaUrl : NSURL, thumbnail: UIImage)  {
         if clipsCount < clipsCountMax {
@@ -251,5 +259,12 @@ class MainScreenViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if (segue.identifier == "PickVideoSeque") {
+           // let vc : CameraRollTableViewController = segue.destinationViewController as CameraRollTableViewController;
+            // pass parameters to  vc
+        }
+}
 }
 
