@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 class CameraRollTableViewController: UITableViewController, CameraModelDelegate {
 
@@ -75,13 +76,17 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
         var currentTag : NSInteger = cell.tag + 1;
         cell.tag = currentTag;
         
-        cameraRollModel.fetchAssetAtIndexAsync(rowIndex,
-            placeholderImage: UIImage(named: "placeholderBlack")!, handler: { (indexBack : Int, imageResult : UIImage) -> Void in
+        cameraRollModel.fetchAssetBasicInfoAtIndexAsync(rowIndex,
+            placeholderImage: UIImage(named: "placeholderBlack"), handler: { (indexBack : Int, creationDateString : String, duration : Float64, imageResult : UIImage) -> Void in
                 // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
                 if (cell.tag == currentTag) {
                     dispatch_async(dispatch_get_main_queue(), {
+                        cell.textLabel?.text = "Video - " + creationDateString;
+                        cell.detailTextLabel?.text = "%\(duration)f sec";
                         if (cell.imageView != nil) {
                             cell.imageView!.image  = imageResult;
+                            cell.setNeedsLayout();
+                            cell.setNeedsDisplay();
                         }
                     });
                 }
@@ -90,7 +95,26 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
         return cell
     }
     
-
+        // MARK: - Navigation
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        // Get the new view controller using [segue destinationViewController].
+        // Pass the selected object to the new view controller.
+        if (segue.identifier == "playVideoSegue") {
+            var vc  : VidPlayerViewController! = segue.destinationViewController as? VidPlayerViewController
+            vc?.playingModelIndex = self.tableView.indexPathForSelectedRow()?.row;
+            vc?.cameraModel = self.cameraRollModel
+        }
+    }
+        
+    /*
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        var index = self.tableView.indexPathForSelectedRow()?.row;
+        var selectedItem : PHFetchResult = cameraRollModel.cameraRollVideosFetchResults[index!] as PHFetchResult;
+    }
+    */
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView!, canEditRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
@@ -125,15 +149,4 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
         return true
     }
     */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

@@ -71,10 +71,48 @@ class CameraRollModel: NSObject, PHPhotoLibraryChangeObserver {
     }
     
     
-    func fetchAssetAtIndexAsync(index : Int, placeholderImage : UIImage, handler : ((Int, UIImage) -> Void) ) {
+    func fetchAssetBasicInfoAtIndexAsync(index : Int, placeholderImage : UIImage, handler : ((Int, String, Float64, UIImage) -> Void) ) {
         if index < 0 || index >= self.count {
             println ("assetAtIndex: index \(index) out of range. Ignoring request.");
-            handler(index, placeholderImage);
+            handler(index, "unknown", 0, placeholderImage);
+            return;
+        }
+        
+        // PHFetchResult is a PHAsset class
+        var asset : PHAsset = cameraRollVideosFetchResults[index] as PHAsset;
+
+        // the PHImageManager delivers the AVAsset
+        var assetOptions =  PHVideoRequestOptions();
+        assetOptions.deliveryMode = PHVideoRequestOptionsDeliveryMode.FastFormat;
+        self.imageManager.requestAVAssetForVideo(asset,
+            options: assetOptions) { (videoAsset : AVAsset!, audioAsset : AVAudioMix!, info : [NSObject : AnyObject]!) -> Void in
+                if (videoAsset == nil) {
+                    println ("fetchAssetBasicInfoAtIndexAsync: index \(index), no video asset found");
+                    handler(index, "unknown", 0, placeholderImage)
+                    return;
+                } else {
+                    var generator : AVAssetImageGenerator = AVAssetImageGenerator(asset: videoAsset);
+                    generator.appliesPreferredTrackTransform = true;
+                    var time : CMTime = CMTimeMake(1,2);
+                    generator.maximumSize = CGSize(width: 240, height: 160)
+                    var oneRef : CGImageRef = generator.copyCGImageAtTime(time, actualTime: nil, error: nil);
+                    var image : UIImage = UIImage(CGImage: oneRef);
+                    var duration : Float64 = CMTimeGetSeconds(videoAsset.duration)
+                    var creationDate : AVMetadataItem! = videoAsset.creationDate
+                    var creationDateString = "unknown"
+                    if (creationDate != nil) {
+                        var dateNS : NSDate =  creationDate!.dateValue;
+                        creationDateString = dateNS.description;
+                    }
+                    handler(index, creationDateString, duration, image);
+                }
+            }
+    }
+    
+    func fetchAssetFullAsync(index : Int, handler : ((Int, AVPlayerItem! ) -> Void) ) {
+        if index < 0 || index >= self.count {
+            println ("fetchAssetFullAsync: index \(index) out of range. Ignoring request.");
+            handler(index, nil);
             return;
         }
         
@@ -83,25 +121,18 @@ class CameraRollModel: NSObject, PHPhotoLibraryChangeObserver {
         
         // the PHImageManager delivers the AVAsset
         var assetOptions =  PHVideoRequestOptions();
-        assetOptions.deliveryMode = PHVideoRequestOptionsDeliveryMode.FastFormat;
-        self.imageManager.requestAVAssetForVideo(asset,
-            options: assetOptions) { (videoAsset : AVAsset!, audioAsset : AVAudioMix!, info : [NSObject : AnyObject]!) -> Void in
-                if (videoAsset == nil) {
-                    println ("assetAtIndex: index \(index), no video asset found");
-                    handler(index, placeholderImage)
-                    return;
-                } else {
-                    var generator : AVAssetImageGenerator = AVAssetImageGenerator(asset: videoAsset);
-                    generator.appliesPreferredTrackTransform = true;
-                    var time : CMTime = CMTimeMake(1,2);
-                    generator.maximumSize = CGSize(width: 240, height: 160)
-                    var oneRef : CGImageRef = generator.copyCGImageAtTime(time, actualTime: nil, error: nil);
-                    var image : UIImage = UIImage(CGImage: oneRef)!;
-                    handler(index, image);
-                }
+        assetOptions.deliveryMode = PHVideoRequestOptionsDeliveryMode.Automatic;
+        
+        self.imageManager.requestPlayerItemForVideo(asset, options: assetOptions) { ( avPlayerItemResult : AVPlayerItem!, info :[NSObject : AnyObject]!) -> Void in
+            if (avPlayerItemResult == nil) {
+                println ("fetchAssetFullAsync: index \(index), no video asset found");
+                handler(index, nil)
+                return;
+            } else {
+                 handler(index, avPlayerItemResult)
             }
+        }
     }
-    
     
     func photoLibraryDidChange(changeInstance: PHChange!) {
         // this call will happen in a background thread

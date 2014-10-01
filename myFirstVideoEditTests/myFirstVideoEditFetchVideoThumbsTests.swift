@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 
-class myFirstVideoEditTests: XCTestCase, CameraModelDelegate {
+class myFirstVideoEditFetchVideoThumbsTests: XCTestCase, CameraModelDelegate {
     
     override func setUp() {
         super.setUp()
@@ -26,8 +26,6 @@ class myFirstVideoEditTests: XCTestCase, CameraModelDelegate {
     var thumbsLoadedExpectation : XCTestExpectation!;
     
     func testLoadThumbsOfAllVideosInCameraRoll() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
         
         cameraModel = CameraRollModel(delegate: self);
         cameraModel.requestAccessToPhotoLibraryAsync();
@@ -42,21 +40,13 @@ class myFirstVideoEditTests: XCTestCase, CameraModelDelegate {
         cameraModel!.requestAllVideos();
         var thumbsToload = cameraModel!.count;
         for index in 0 ... cameraModel!.count-1 {
-            cameraModel.fetchAssetAtIndexAsync(index, placeholderImage: UIImage(named: "placeholderBlack")!, handler: { (indexBack : Int, imageBack : UIImage) -> Void in
-                println("thumbnail image for video \(indexBack), \(imageBack.debugDescription), width x height = \(imageBack.size.width) x \(imageBack.size.height)");
+            cameraModel.fetchAssetBasicInfoAtIndexAsync(index, placeholderImage: UIImage(named: "placeholderBlack"), handler: { (indexBack : Int, createDateString : String, duration : Float64, imageBack : UIImage) -> Void in
+                println("thumbnail image for video \(indexBack), created: \(createDateString), dur=\(duration)sec, \(imageBack.debugDescription), width x height = \(imageBack.size.width) x \(imageBack.size.height)");
                 thumbsToload--;
                 if (thumbsToload == 0) {
                     self.thumbsLoadedExpectation.fulfill();
                 }
             })
-        }
-    }
-    
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
         }
     }
 }

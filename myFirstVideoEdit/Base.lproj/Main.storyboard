@@ -1,25 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6246" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dSY-ef-eQv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="L1G-ef-pYw">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6239"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
-        <!--Navigation Controller-->
-        <scene sceneID="iiu-Jx-Eyv">
-            <objects>
-                <navigationController id="uWj-bO-0AN" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="eZY-aX-YfF">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="dSY-ef-eQv" kind="show" id="eni-QQ-ggI"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zBB-RU-PgG" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-762" y="419"/>
-        </scene>
         <!--Video Editor-->
         <scene sceneID="SIb-ym-jZs">
             <objects>
@@ -92,7 +76,7 @@
                                     <barButtonItem title="add clip" id="nmT-kK-97p">
                                         <connections>
                                             <action selector="addVideoSelected:" destination="dSY-ef-eQv" id="z7g-my-l4U"/>
-                                            <segue destination="nJM-ji-eGk" kind="show" identifier="PickVideoSeque" id="Geg-wh-d1d"/>
+                                            <segue destination="8uB-CN-9et" kind="show" identifier="PickVideoSeque" id="zxv-NC-zBn"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="HJU-we-mgD"/>
@@ -112,7 +96,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Video Editor" id="7NF-to-lo1"/>
+                    <navigationItem key="navigationItem" title="Video Editor" id="7NF-to-lo1">
+                        <barButtonItem key="rightBarButtonItem" title="Settings" id="WSI-jE-fYj"/>
+                    </navigationItem>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
@@ -132,52 +118,119 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="clo-8T-WE2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-82" y="424"/>
+            <point key="canvasLocation" x="558" y="424"/>
         </scene>
-        <!--Camera Roll Table View Controller-->
-        <scene sceneID="USs-ET-9dm">
+        <!--My Videos-->
+        <scene sceneID="QjQ-Fa-Y3Y">
             <objects>
-                <tableViewController id="nJM-ji-eGk" customClass="CameraRollTableViewController" customModule="myFirstVideoEdit" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="nVx-Ni-vV0">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                <tableViewController id="8uB-CN-9et" customClass="CameraRollTableViewController" customModule="myFirstVideoEdit" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="vHM-LN-EOL">
+                        <rect key="frame" x="0.0" y="64" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="videoCell" selectionStyle="default" indentationWidth="10" textLabel="1XN-la-q67" detailTextLabel="q1J-VC-Stl" imageView="h89-iZ-ygk" style="IBUITableViewCellStyleSubtitle" id="rhs-3D-toZ">
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="videoCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="videoCell" textLabel="EBZ-2r-rSj" detailTextLabel="ZwE-5l-F96" imageView="nOI-HU-lnd" style="IBUITableViewCellStyleSubtitle" id="AxW-xg-4fW">
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rhs-3D-toZ" id="g0b-Ba-JSc">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AxW-xg-4fW" id="qmI-0v-59K">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="1XN-la-q67">
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Video" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EBZ-2r-rSj">
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="q1J-VC-Stl">
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="0sec" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZwE-5l-F96">
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="placeholderWhite" id="h89-iZ-ygk">
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="placeholderWhite" id="nOI-HU-lnd">
                                             <autoresizingMask key="autoresizingMask"/>
                                         </imageView>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <segue destination="fbW-7g-QlS" kind="show" identifier="playVideoSegue" id="5Ur-ui-6Es"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
-                            <outlet property="dataSource" destination="nJM-ji-eGk" id="dL7-Cu-38a"/>
-                            <outlet property="delegate" destination="nJM-ji-eGk" id="8Iu-KW-gEK"/>
+                            <outlet property="dataSource" destination="8uB-CN-9et" id="SIv-SX-axe"/>
+                            <outlet property="delegate" destination="8uB-CN-9et" id="v2w-Bz-hdk"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" title="My Videos" id="dl2-4R-5y5">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="TnY-R2-oiu"/>
+                    </navigationItem>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="qEL-Su-lgs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gjd-NM-G0w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="529" y="448"/>
+            <point key="canvasLocation" x="996" y="424"/>
+        </scene>
+        <!--Playing Video-->
+        <scene sceneID="Hez-It-efT">
+            <objects>
+                <viewController id="fbW-7g-QlS" customClass="VidPlayerViewController" customModule="myFirstVideoEdit" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="b2I-iv-w0H"/>
+                        <viewControllerLayoutGuide type="bottom" id="gzw-Ik-fJn"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1tl-ht-nN7">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wcE-B0-k6F">
+                                <rect key="frame" x="0.0" y="72" width="320" height="313"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Playing Video" id="ETy-2I-Nvz">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="fbU-U0-KCa">
+                            <connections>
+                                <action selector="cancelSelected:" destination="fbW-7g-QlS" id="RFq-Ed-pQ5"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="kzk-Hq-4lw">
+                            <connections>
+                                <action selector="saveSelected:" destination="fbW-7g-QlS" id="Vkj-AE-0KY"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="avPlayerContainingView" destination="wcE-B0-k6F" id="c5o-Cj-l8c"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="abt-Hx-fAl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1409" y="429"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="YA2-9N-4BD">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="L1G-ef-pYw" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="0B5-4v-3xf">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="dSY-ef-eQv" kind="relationship" relationship="rootViewController" id="hyQ-ov-9fK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ibt-jN-aSG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-82" y="424"/>
         </scene>
     </scenes>
     <resources>
