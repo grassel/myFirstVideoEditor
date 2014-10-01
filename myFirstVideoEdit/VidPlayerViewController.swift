@@ -53,6 +53,8 @@ class VidPlayerViewController: UIViewController {
             dispatch_async(dispatch_get_main_queue(), {
                 if let vcStack = self.navigationController?.viewControllers {
                     
+                    self.vidPlayer.stopPlaying();
+                    
                     var mainScreenVC = vcStack[vcStack.count-3] as MainScreenViewController;
                     mainScreenVC.addMovie(addAVAsset);
                     self.navigationController?.popToViewController(mainScreenVC, animated: true);

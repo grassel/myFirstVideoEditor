@@ -39,7 +39,7 @@ class VidPlayer: NSObject {
     }
     
     
-    func deinitAVPlayer() {
+    func stopPlaying() {
         if (self.avPlayer == nil) {
             return;
         }
