@@ -6,27 +6,9 @@ import QuartzCore;
 
 class VidPlayer: NSObject {
     
-    // model of all user's videos
-    var cameraModel : CameraRollModel!;
-    
-    // index of the PHAsset in cameraModel this player is playing.
-    var playingModelIndex : Int!
-    
-    var avPlayerItem : AVPlayerItem!;
-    var avPlayer : AVPlayer!
-    
-    // the UIView that is the parent to this player
-    var parentView : UIView
-    
-    // the QuarzCore layer containing this player, sublayer of parentView.layer
-    private var playerLayer : AVPlayerLayer!
-    
-    // the return value of addBoundaryTimeObserverForTimes:queue:usingBlock:
-    var avPlayerTimeObserverId : AnyObject!
 
-    init(parentView : UIView, cameraModel : CameraRollModel){
+    init(parentView : UIView){
         self.parentView = parentView;
-        self.cameraModel = cameraModel;
         super.init()
         self.instalAVPlayerToViewHierarchie();
     }
@@ -50,10 +32,12 @@ class VidPlayer: NSObject {
         playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
         parentLayer.addSublayer(playerLayer)
     }
+
     
     private func deinstalAVPlayerFromViewHierarchie() {
         self.playerLayer.removeFromSuperlayer();
     }
+    
     
     func deinitAVPlayer() {
         if (self.avPlayer == nil) {
@@ -69,19 +53,11 @@ class VidPlayer: NSObject {
         self.avPlayer.removeTimeObserver(self.avPlayerTimeObserverId)
     }
     
-    // this is the play command to be used for PHAsset as included in PHFetchResult array
-    // (the user's videos in camera roll).
-    func playAsset(assetIndex : Int) {
-        self.playingModelIndex = assetIndex;
-        
-        if (playingModelIndex == nil || cameraModel == nil) {
-            println("prepareToPlayAsset: playingModelIndex or cameeraModel unset. Bailing out");
-            return;
-        }
-        
-        cameraModel!.fetchAssetFullAsync(playingModelIndex!, handler: { (indexBack : Int, avPlayerItemBack : AVPlayerItem!) -> Void in
+    
+    func play (phasset asset: PHAsset) {
+        CameraRollModel.fetchAssetFullAsync(asset, reference: 0, handler: { (indexBack : Int, avPlayerItemBack : AVPlayerItem!) -> Void in
             if (avPlayerItemBack == nil) {
-                println("prepareToPlayAsset: failed to fetch playerItem Bailing out");
+                println("prepareToPlayAsset: failed to fetch playerItem, bailing out");
                 return;
             }
             dispatch_async(dispatch_get_main_queue(), {
@@ -91,14 +67,14 @@ class VidPlayer: NSObject {
     }
     
     // this is the play command to be used for the composite movie
-    func playAVComposiiton (composition : AVComposition) {
+    func play (avcomposition composition : AVComposition) {
         var playerItem = AVPlayerItem(asset: composition)
         self.setupAndPlayItem(playerItem);
     }
 
     private func setupAndPlayItem(item : AVPlayerItem!) {
         if (item == nil) {
-            println("setupAndPlayerItem item is nil. Ignoring");
+            println("setupAndPlayItem item is nil. Ignoring");
             return;
         }
         self.avPlayerItem = item!;
@@ -129,4 +105,18 @@ class VidPlayer: NSObject {
         
         super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context);
     }
+    
+    
+    var avPlayerItem : AVPlayerItem!;
+    var avPlayer : AVPlayer!
+    
+    // the UIView that is the parent to this player
+    var parentView : UIView
+    
+    // the QuarzCore layer containing this player, sublayer of parentView.layer
+    private var playerLayer : AVPlayerLayer!
+    
+    // the return value of addBoundaryTimeObserverForTimes:queue:usingBlock:
+    var avPlayerTimeObserverId : AnyObject!
+
 }

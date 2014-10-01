@@ -22,8 +22,6 @@ class CameraRollModel: NSObject, PHPhotoLibraryChangeObserver {
     // this structure will include all user's videos once the fetch has completed
     var cameraRollVideosFetchResults : PHFetchResult!;
     
-    var imageManager : PHImageManager = PHImageManager.defaultManager();
-    
     override init() {
         super.init();
     }
@@ -80,15 +78,19 @@ class CameraRollModel: NSObject, PHPhotoLibraryChangeObserver {
         
         // PHFetchResult is a PHAsset class
         var asset : PHAsset = cameraRollVideosFetchResults[index] as PHAsset;
-
+        CameraRollModel.fetchAssetBasicInfoAsync(asset, placeholderImage: placeholderImage, reference: index, handler: handler);
+    }
+    
+    class func fetchAssetBasicInfoAsync(asset : PHAsset, placeholderImage : UIImage, reference : Int, handler : ((Int, String, Float64, UIImage) -> Void) ) {
         // the PHImageManager delivers the AVAsset
         var assetOptions =  PHVideoRequestOptions();
         assetOptions.deliveryMode = PHVideoRequestOptionsDeliveryMode.FastFormat;
-        self.imageManager.requestAVAssetForVideo(asset,
+        var referenceLocal = reference;
+        PHImageManager.defaultManager().requestAVAssetForVideo(asset,
             options: assetOptions) { (videoAsset : AVAsset!, audioAsset : AVAudioMix!, info : [NSObject : AnyObject]!) -> Void in
                 if (videoAsset == nil) {
                     println ("fetchAssetBasicInfoAtIndexAsync: index \(index), no video asset found");
-                    handler(index, "unknown", 0, placeholderImage)
+                    handler(referenceLocal, "unknown", 0, placeholderImage)
                     return;
                 } else {
                     var generator : AVAssetImageGenerator = AVAssetImageGenerator(asset: videoAsset);
@@ -104,7 +106,7 @@ class CameraRollModel: NSObject, PHPhotoLibraryChangeObserver {
                         var dateNS : NSDate =  creationDate!.dateValue;
                         creationDateString = dateNS.description;
                     }
-                    handler(index, creationDateString, duration, image);
+                    handler(referenceLocal, creationDateString, duration, image);
                 }
             }
     }
@@ -119,16 +121,39 @@ class CameraRollModel: NSObject, PHPhotoLibraryChangeObserver {
         // PHFetchResult is a PHAsset class
         var asset : PHAsset = cameraRollVideosFetchResults[index] as PHAsset;
         
+        CameraRollModel.fetchAssetFullAsync(asset, reference: index, handler: handler)
+    }
+    
+    class func fetchAssetFullAsync(asset : PHAsset, reference : Int, handler : ((Int, AVPlayerItem! ) -> Void) ) {
+    
+        // the PHImageManager delivers the AVPlayerItem
+        var assetOptions =  PHVideoRequestOptions();
+        assetOptions.deliveryMode = PHVideoRequestOptionsDeliveryMode.Automatic;
+        var referenceLocal = reference;
+        PHImageManager.defaultManager().requestPlayerItemForVideo(asset, options: assetOptions) { ( avPlayerItemResult : AVPlayerItem!, info :[NSObject : AnyObject]!) -> Void in
+            if (avPlayerItemResult == nil) {
+                println ("fetchAssetFullAsync: index \(referenceLocal), no video asset found");
+                handler(referenceLocal, nil)
+                return;
+            } else {
+                 handler(referenceLocal, avPlayerItemResult)
+            }
+        }
+    }
+    
+    // for a given PHAsset, fetch the AVAsset asynchronously
+    // AVAsset is the class handled by the EditedMoviesModel
+    // and the class used for composing the output movie.
+    class func fetchAVAssetAsync(phasset: PHAsset, handler : ((AVAsset) -> Void) ) {
         // the PHImageManager delivers the AVAsset
         var assetOptions =  PHVideoRequestOptions();
         assetOptions.deliveryMode = PHVideoRequestOptionsDeliveryMode.Automatic;
-        self.imageManager.requestPlayerItemForVideo(asset, options: assetOptions) { ( avPlayerItemResult : AVPlayerItem!, info :[NSObject : AnyObject]!) -> Void in
-            if (avPlayerItemResult == nil) {
-                println ("fetchAssetFullAsync: index \(index), no video asset found");
-                handler(index, nil)
+        PHImageManager.defaultManager().requestAVAssetForVideo(phasset, options: assetOptions) { (avasset : AVAsset!, avaudiomix : AVAudioMix!, info : [NSObject : AnyObject]!) -> Void in
+            if (avasset == nil) {
+                println ("fetchAVAssetAsync: no video asset found");
                 return;
             } else {
-                 handler(index, avPlayerItemResult)
+                handler(avasset);
             }
         }
     }

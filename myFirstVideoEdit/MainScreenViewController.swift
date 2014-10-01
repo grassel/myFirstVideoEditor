@@ -9,9 +9,10 @@
 import UIKit
 import AVFoundation;
 import MediaPlayer
+import Photos
 
 class MainScreenViewController: UIViewController {
-
+    
     @IBOutlet weak var movieThumbImage1: UIImageView!
     @IBOutlet weak var movieThumbImage2: UIImageView!
     @IBOutlet weak var movieThumbImage3: UIImageView!
@@ -22,27 +23,27 @@ class MainScreenViewController: UIViewController {
     @IBOutlet weak var transitionIndicatorButton3: UIButton!
     
     @IBOutlet weak var waitIndicator: UIActivityIndicatorView!
-
+    
     // Storyboard does not allow us to add this MoviePlayer directly.
     // Insted, we only create a placeholder view  self.viewForMovie
     // in story board and add the MoviePlayer view programmatically
     @IBOutlet weak var viewForMovie: UIView!
-
+    
     @IBOutlet weak var addVideoButton: UIBarButtonItem!
     @IBOutlet weak var clearButton: UIBarButtonItem!
     @IBOutlet weak var exportButton: UIBarButtonItem!
-
+    
     // FIXME: use AVPlayerItem instead of MPMoviePlayer? -
     // check if AVPlayerItem class can play AVMutableComposition without need to export first.
     var moviePlayer:MPMoviePlayerController!
-
+    
     // the view model
     var movieThumbsImageViews : [UIImageView] = [UIImageView]();
     var movieThumbsImages : [UIImage] = [UIImage]();
     
     var videoPicker : VideoPicker!
     var movieExporter : MovieExporter!
-    var model : Model!;
+    var clipsModel : ClipModel!;
     
     var videoAddedSinceLastExport : Bool = false {
         didSet {
@@ -89,27 +90,40 @@ class MainScreenViewController: UIViewController {
     
     var clipsCount : Int {
         get {
-            return model.movieCount;
+            return clipsModel.movieCount;
         }
     }
     
     var clipsCountMax : Int {
         get {
-            return model.movieCountMax
+            return clipsModel.movieCountMax
         }
     }
-
-    func addMovie(#originalMediaUrl: NSURL, editedMediaUrl : NSURL) {
-        model.addMovie(originalMediaUrl: originalMediaUrl, editedMediaUrl: editedMediaUrl)
-        videoAddedSinceLastExport = true;
-        updateToolbarButtonStates();
+    
+    func clipAt(index : Int) -> AVAsset {
+        return clipsModel.movieAVAssetAt(index)
     }
     
+    
+    func addMovie(avasset : AVAsset) {
+        if clipsCount < clipsCountMax {
+            // generate and add thumnail
+            movieThumbsImages[clipsCount] = ClipModel.generateThumb(avasset);
+            movieThumbsImageViews[clipsCount].image  = movieThumbsImages[clipsCount];
+            
+            clipsModel.addMovie(avasset: avasset)
+            
+            videoAddedSinceLastExport = true;
+            updateToolbarButtonStates();
+        } else {
+            println("addMovie - capacity reached, can not add another movie");
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        model = Model();
+        clipsModel = ClipModel();
         videoAddedSinceLastExport = false;
         isExporting = false;
         
@@ -118,21 +132,21 @@ class MainScreenViewController: UIViewController {
         movieThumbsImageViews = [
             movieThumbImage1!, movieThumbImage2!, movieThumbImage3!, movieThumbImage4!
         ];
-        movieThumbsImages = [UIImage](count: model.movieCountMax, repeatedValue: UIImage());
+        movieThumbsImages = [UIImage](count: clipsModel.movieCountMax, repeatedValue: UIImage());
         
         self.moviePlayer = MPMoviePlayerController();
         self.moviePlayer.view.frame = viewForMovie.bounds;
         self.moviePlayer.view.autoresizingMask =
-              	           UIViewAutoresizing.FlexibleWidth |
-              	           UIViewAutoresizing.FlexibleHeight;
+            UIViewAutoresizing.FlexibleWidth |
+            UIViewAutoresizing.FlexibleHeight;
         moviePlayer.fullscreen = false;
         moviePlayer.controlStyle = MPMovieControlStyle.Embedded; // Controls for an embedded view are displayed. The controls include a start/pause button, a scrubber bar, and a button for toggling between fullscreen and embedded display modes.
-
+        
         self.viewForMovie.addSubview(self.moviePlayer.view)
         
         transitionStyle = transitionStyleEnum.crossDisolve
     }
-
+    
     override func viewWillAppear(animated: Bool) {
         waitIndicator.hidesWhenStopped = true;
         waitIndicator.layer.zPosition = 9999; // always on top
@@ -141,16 +155,16 @@ class MainScreenViewController: UIViewController {
     }
     
     func updateToolbarButtonStates() {
-        addVideoButton.enabled = (!isExporting && model.movieCount < model.movieCountMax);
-        exportButton.enabled = !isExporting &&  videoAddedSinceLastExport && (model.movieCount >= 2);
-        clearButton.enabled = !isExporting && (model.movieCount > 0);
+        addVideoButton.enabled = (!isExporting && clipsModel.movieCount < clipsModel.movieCountMax);
+        exportButton.enabled = !isExporting &&  videoAddedSinceLastExport && (clipsModel.movieCount >= 2);
+        clearButton.enabled = !isExporting && (clipsModel.movieCount > 0);
     }
     
     func updateWaitIndicator() {
         if isExporting {
-             waitIndicator.startAnimating()
+            waitIndicator.startAnimating()
         } else {
-             waitIndicator.stopAnimating()
+            waitIndicator.stopAnimating()
         }
     }
     /*
@@ -159,10 +173,10 @@ class MainScreenViewController: UIViewController {
     */
     /*
     @IBAction func addVideoSelected(sender: AnyObject) {
-        if (videoPicker == nil) {
-            self.videoPicker = VideoPicker(viewController: self);
-        }
-        videoPicker.selectVideo();
+    if (videoPicker == nil) {
+    self.videoPicker = VideoPicker(viewController: self);
+    }
+    videoPicker.selectVideo();
     }
     */
     
@@ -172,19 +186,9 @@ class MainScreenViewController: UIViewController {
     }
     
     
-    func addMovie(#originalMediaUrl: NSURL, editedMediaUrl : NSURL, thumbnail: UIImage)  {
-        if clipsCount < clipsCountMax {
-            movieThumbsImages[clipsCount] = thumbnail;
-            movieThumbsImageViews[clipsCount].image  =
-                movieThumbsImages[clipsCount];
-            
-            addMovie(originalMediaUrl: originalMediaUrl, editedMediaUrl: editedMediaUrl)
-        }
-    }
-    
     @IBAction func clearClipsSelected(sender: AnyObject) {
-        model = Model();
-        for index in 0 ... model.movieCountMax-1 {
+        clipsModel = ClipModel();
+        for index in 0 ... clipsModel.movieCountMax-1 {
             movieThumbsImages[index] = UIImage(named: "placeholderBlack") // from image assets
             movieThumbsImageViews[index].image = movieThumbsImages[index];
         }
@@ -192,8 +196,8 @@ class MainScreenViewController: UIViewController {
     }
     
     /*
-      compositing the movie using AVFoundation
-        and  QuartzCore for fade animations
+    compositing the movie using AVFoundation
+    and  QuartzCore for fade animations
     */
     
     @IBAction func exportMovieSelected(sender: AnyObject) {
@@ -204,11 +208,11 @@ class MainScreenViewController: UIViewController {
         case transitionStyleEnum.crossFade:
             movieExporter.exportVideoCrossFade(applicationDocumentsDirectory())
         case transitionStyleEnum.crossDisolve:
-              movieExporter.exportVideoCrossFadeOpenGL(applicationDocumentsDirectory());
+            movieExporter.exportVideoCrossFadeOpenGL(applicationDocumentsDirectory());
         }
     }
-
-
+    
+    
     func movieExportCompletedOK(url : NSURL) {
         isExporting = false;
         videoAddedSinceLastExport = false;
@@ -223,13 +227,13 @@ class MainScreenViewController: UIViewController {
         
         moviePlayer.prepareToPlay();
         moviePlayer.play();
-
+        
         println("playMovie: \(url) ... ");
     }
     
     
     func applicationDocumentsDirectory() -> String {
-
+        
         var documentsDirectory : String?
         var paths:[AnyObject] = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true);
         
@@ -263,9 +267,9 @@ class MainScreenViewController: UIViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "PickVideoSeque") {
-           // let vc : CameraRollTableViewController = segue.destinationViewController as CameraRollTableViewController;
+            // let vc : CameraRollTableViewController = segue.destinationViewController as CameraRollTableViewController;
             // pass parameters to  vc
         }
-}
+    }
 }
 

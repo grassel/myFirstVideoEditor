@@ -13,27 +13,28 @@ import QuartzCore;
 
 class VidPlayerViewController: UIViewController {
 
-    var playingModelIndex : Int!
-    var cameraModel : CameraRollModel!
+    var playingAsset : PHAsset!
     var vidPlayer : VidPlayer!;
       
     @IBOutlet weak var avPlayerContainingView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.vidPlayer = VidPlayer(parentView: avPlayerContainingView!, cameraModel: cameraModel)
-        self.vidPlayer.playAsset(playingModelIndex);
+        if (playingAsset != nil) {
+            self.vidPlayer = VidPlayer(parentView: avPlayerContainingView!)
+            self.vidPlayer.play(phasset: playingAsset)
+        } else {
+            println("VidPlayerViewController - viewWillAppear: no PHAsset to play!");
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
-        self.vidPlayer.deinitAVPlayer();
+        self.vidPlayer = nil;  // get rid of the VidPlayer object
         super.viewWillDisappear(animated)
     }
     
@@ -44,19 +45,23 @@ class VidPlayerViewController: UIViewController {
     }
 
     @IBAction func saveSelected(sender: AnyObject) {
-        // go to the roo / main page
-        // FIXME inform the selected video
+        // go to the rooT == main page
+        // inform the selected video
         
-  //      if let vcStack = self.navigationController?.viewControllers {
-        //    var mainScreenVC = vcStack[vcStack.count-2] as MainScreenViewController;
-        //    mainScreenVC.addMovie(..)
+        CameraRollModel.fetchAVAssetAsync(self.playingAsset, handler: { (addAVAsset : AVAsset) -> Void in
             
-//self.cameraModel[self.playingModelIndex]
-            
-        //    self.navigationController?.popToViewController(mainScreenVC, animated: true);
- //       }
-        
-       self.navigationController?.popToRootViewControllerAnimated(true)
+            dispatch_async(dispatch_get_main_queue(), {
+                if let vcStack = self.navigationController?.viewControllers {
+                    
+                    var mainScreenVC = vcStack[vcStack.count-3] as MainScreenViewController;
+                    mainScreenVC.addMovie(addAVAsset);
+                    self.navigationController?.popToViewController(mainScreenVC, animated: true);
+                    return;
+                } else {
+                    println ("saveSelected: failed to get MainScreenViewController")
+                }
+            })
+        })
     }
     
     

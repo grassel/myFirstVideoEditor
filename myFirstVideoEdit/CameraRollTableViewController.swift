@@ -102,11 +102,11 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
         // Pass the selected object to the new view controller.
         if (segue.identifier == "playVideoSegue") {
             var vc  : VidPlayerViewController! = segue.destinationViewController as? VidPlayerViewController
-            vc?.playingModelIndex = self.tableView.indexPathForSelectedRow()?.row;
-            vc?.cameraModel = self.cameraRollModel
+            var row : Int! = self.tableView.indexPathForSelectedRow()?.row;
+            vc?.playingAsset = self.cameraRollModel.cameraRollVideosFetchResults[row!] as PHAsset;
         }
     }
-        
+    
     /*
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         

@@ -12,13 +12,12 @@
 		C51292EA19D73AED00C65FCB /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C51292E919D73AED00C65FCB /* Photos.framework */; };
 		C585C32C19D089D500DEF038 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C585C32B19D089D500DEF038 /* CoreMedia.framework */; };
 		C59D36E019D7FB1400545F0B /* CameraRollModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51292E719D73AB800C65FCB /* CameraRollModel.swift */; };
-		C5AB95CF19D82962001291E3 /* CameraRollTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51292E319D7319C00C65FCB /* CameraRollTableViewController.swift */; };
 		C5AB95D119D83397001291E3 /* CameraRollModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AB95D019D83397001291E3 /* CameraRollModelDelegate.swift */; };
 		C5AB95D219D83397001291E3 /* CameraRollModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AB95D019D83397001291E3 /* CameraRollModelDelegate.swift */; };
 		C5AB95D819D88F00001291E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66C1BB919D0471E00847669 /* AppDelegate.swift */; };
+		C5E0089619DC62BE00D3D938 /* ClipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691336619D2F0B700C347E5 /* ClipModel.swift */; };
 		C601B6CD19D301FA001BF575 /* MovieExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C601B6CC19D301FA001BF575 /* MovieExporter.swift */; };
 		C65C23F019DACFE0006CD334 /* VidPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65C23EF19DACFE0006CD334 /* VidPlayerViewController.swift */; };
-		C65C23F119DACFE0006CD334 /* VidPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65C23EF19DACFE0006CD334 /* VidPlayerViewController.swift */; };
 		C65C23F319DAE2EF006CD334 /* myFirstVideoEditFetchPlayerItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65C23F219DAE2EF006CD334 /* myFirstVideoEditFetchPlayerItemTests.swift */; };
 		C65C23F519DBFAF2006CD334 /* VidPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65C23F419DBFAF2006CD334 /* VidPlayer.swift */; };
 		C65C23F619DBFAF2006CD334 /* VidPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65C23F419DBFAF2006CD334 /* VidPlayer.swift */; };
@@ -44,7 +43,7 @@
 		C679D04619D47619002E8E08 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C679D04519D47619002E8E08 /* Foundation.framework */; };
 		C679D04919D476F8002E8E08 /* myFirstVideoEditor-Bridging-Header.m in Sources */ = {isa = PBXBuildFile; fileRef = C679D04819D476F8002E8E08 /* myFirstVideoEditor-Bridging-Header.m */; };
 		C691336519D2E09E00C347E5 /* VideoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691336419D2E09E00C347E5 /* VideoPicker.swift */; };
-		C691336719D2F0B700C347E5 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691336619D2F0B700C347E5 /* Model.swift */; };
+		C691336719D2F0B700C347E5 /* ClipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691336619D2F0B700C347E5 /* ClipModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,7 +98,7 @@
 		C679D04519D47619002E8E08 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C679D04819D476F8002E8E08 /* myFirstVideoEditor-Bridging-Header.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "myFirstVideoEditor-Bridging-Header.m"; sourceTree = "<group>"; };
 		C691336419D2E09E00C347E5 /* VideoPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPicker.swift; sourceTree = "<group>"; };
-		C691336619D2F0B700C347E5 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		C691336619D2F0B700C347E5 /* ClipModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,9 +137,16 @@
 				C51292E719D73AB800C65FCB /* CameraRollModel.swift */,
 				C5AB95D019D83397001291E3 /* CameraRollModelDelegate.swift */,
 				C65C23EF19DACFE0006CD334 /* VidPlayerViewController.swift */,
-				C65C23F419DBFAF2006CD334 /* VidPlayer.swift */,
 			);
 			name = CameraRoleBrowser;
+			sourceTree = "<group>";
+		};
+		C5E0089319DC379A00D3D938 /* VidPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				C65C23F419DBFAF2006CD334 /* VidPlayer.swift */,
+			);
+			name = VidPlayer;
 			sourceTree = "<group>";
 		};
 		C66C1BAB19D0471E00847669 = {
@@ -166,13 +172,14 @@
 			isa = PBXGroup;
 			children = (
 				C66C1BBD19D0471E00847669 /* Main.storyboard */,
+				C5E0089319DC379A00D3D938 /* VidPlayer */,
 				C51292E219D72FC800C65FCB /* CameraRoleBrowser */,
 				C682444219D4712900BA19D1 /* APLCustomCompositors */,
 				C66C1BB919D0471E00847669 /* AppDelegate.swift */,
 				C66C1BBB19D0471E00847669 /* MainScreenViewController.swift */,
 				C691336419D2E09E00C347E5 /* VideoPicker.swift */,
 				C601B6CC19D301FA001BF575 /* MovieExporter.swift */,
-				C691336619D2F0B700C347E5 /* Model.swift */,
+				C691336619D2F0B700C347E5 /* ClipModel.swift */,
 				C66C1BC019D0471E00847669 /* Images.xcassets */,
 				C66C1BC219D0471E00847669 /* LaunchScreen.xib */,
 				C66C1BB719D0471E00847669 /* Supporting Files */,
@@ -365,7 +372,7 @@
 				C65C23F519DBFAF2006CD334 /* VidPlayer.swift in Sources */,
 				C51292E419D7319C00C65FCB /* CameraRollTableViewController.swift in Sources */,
 				C679D02E19D47523002E8E08 /* APLCustomVideoCompositor.m in Sources */,
-				C691336719D2F0B700C347E5 /* Model.swift in Sources */,
+				C691336719D2F0B700C347E5 /* ClipModel.swift in Sources */,
 				C679D03619D4755B002E8E08 /* APLOpenGLRenderer.m in Sources */,
 				C679D03719D4755B002E8E08 /* APLDiagonalWipeRenderer.m in Sources */,
 			);
@@ -376,11 +383,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5AB95D819D88F00001291E3 /* AppDelegate.swift in Sources */,
-				C65C23F119DACFE0006CD334 /* VidPlayerViewController.swift in Sources */,
 				C65C23F619DBFAF2006CD334 /* VidPlayer.swift in Sources */,
+				C5E0089619DC62BE00D3D938 /* ClipModel.swift in Sources */,
 				C66C1BD019D0471E00847669 /* myFirstVideoEditFetchVideoThumbsTests.swift in Sources */,
 				C65C23F319DAE2EF006CD334 /* myFirstVideoEditFetchPlayerItemTests.swift in Sources */,
-				C5AB95CF19D82962001291E3 /* CameraRollTableViewController.swift in Sources */,
 				C5AB95D219D83397001291E3 /* CameraRollModelDelegate.swift in Sources */,
 				C59D36E019D7FB1400545F0B /* CameraRollModel.swift in Sources */,
 			);
@@ -505,7 +511,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/grassel/iOSDevelopment/myFirstVideoEditor/myFirstVideoEdit/myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
+				SWIFT_OBJC_BRIDGING_HEADER = "myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -520,7 +526,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/grassel/iOSDevelopment/myFirstVideoEditor/myFirstVideoEdit/myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
+				SWIFT_OBJC_BRIDGING_HEADER = "myFirstVideoEdit/myFirstVideoEditor-Bridging-Header.m";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

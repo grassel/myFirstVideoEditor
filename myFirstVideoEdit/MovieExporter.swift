@@ -21,7 +21,7 @@ class MovieExporter: NSObject {
     }
     
     func exportVideoRampInOut(outputPath:String) {
-        if (myViewcontroller.model.movieCount < 2) {
+        if (myViewcontroller.clipsCount < 2) {
             println("at least two movies needed for merging");
             return;
         }
@@ -39,9 +39,8 @@ class MovieExporter: NSObject {
         var insertTime = kCMTimeZero
         var index = 0;
         
-        for index in 0 ... myViewcontroller.model.movieCount-1 {
-            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
-            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+        for index in 0 ... myViewcontroller.clipsCount-1 {
+            let sourceAsset = myViewcontroller.clipAt(index)
             
             let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
             let audios = sourceAsset.tracksWithMediaType(AVMediaTypeAudio)
@@ -54,7 +53,7 @@ class MovieExporter: NSObject {
                 
                 var transform : CGAffineTransform = assetTrack.preferredTransform;
                 if (transform.a == 0 && transform.d == 0 && (transform.b == 1.0 || transform.b == -1.0) && (transform.c == 1.0 || transform.c == -1.0)) {
-                    println("ERROR: video was shot in portrait mode: \(moviePathUrl)");
+                    println("ERROR: video was shot in portrait mode: \(sourceAsset.debugDescription)");
                 }
                 
                 if audios.count > 0 {
@@ -159,7 +158,7 @@ class MovieExporter: NSObject {
 
     
     func exportVideoCrossFade(outputPath:String) {
-        if (myViewcontroller.model.movieCount < 2) {
+        if (myViewcontroller.clipsCount < 2) {
             println("at least two movies needed for merging");
             return;
         }
@@ -193,15 +192,14 @@ class MovieExporter: NSObject {
         var trackEndTime : CMTime = trackStartTime;
         
         // 1. step: compute times and populate above data structures with values.
-        for index in 0 ... myViewcontroller.model.movieCount-1 {
-            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
-            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+        for index in 0 ... myViewcontroller.clipsCount-1 {
+            let sourceAsset = myViewcontroller.clipAt(index)
 
             trackStartTimes.append(trackStartTime);
 
             trackEndTime = CMTimeAdd(trackStartTime, sourceAsset.duration)
             var fadeOutStartTime : CMTime!
-            if (index == myViewcontroller.model.movieCount-1) {
+            if (index == myViewcontroller.clipsCount-1) {
                 fadeOutStartTime = trackEndTime; // no fade out
             } else {
                 fadeOutStartTime = CMTimeSubtract(trackEndTime, fadeDuration)
@@ -216,7 +214,7 @@ class MovieExporter: NSObject {
                 fadeInEndTime = CMTimeAdd(trackStartTime, fadeDuration);
                 passthroughDuration = CMTimeSubtract(passthroughDuration, fadeDuration);
             }
-            if (index < myViewcontroller.model.movieCount-1) {
+            if (index < myViewcontroller.clipsCount-1) {
                 // the last clip has no fade out
                 passthroughDuration = CMTimeSubtract(passthroughDuration, fadeDuration);
             }
@@ -249,9 +247,8 @@ class MovieExporter: NSObject {
         trackAudios.append(composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID()))
         trackAudios.append(composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID()))
         
-        for index in 0 ... myViewcontroller.model.movieCount-1 {
-            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
-            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+        for index in 0 ... myViewcontroller.clipsCount-1 {
+            let sourceAsset = myViewcontroller.clipAt(index)
             
             let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
             let audios = sourceAsset.tracksWithMediaType(AVMediaTypeAudio)
@@ -289,9 +286,8 @@ class MovieExporter: NSObject {
         
         compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
         
-        for index in 0 ... myViewcontroller.model.movieCount-1 {
-            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
-            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+        for index in 0 ... myViewcontroller.clipsCount-1 {
+            let sourceAsset = myViewcontroller.clipAt(index)
             let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
             
             if tracks.count > 0 {
@@ -301,7 +297,7 @@ class MovieExporter: NSObject {
                 
                 var transform : CGAffineTransform = assetTrack.preferredTransform;
                 if (transform.a == 0 && transform.d == 0 && (transform.b == 1.0 || transform.b == -1.0) && (transform.c == 1.0 || transform.c == -1.0)) {
-                    println("ERROR: video was shot in portrait mode: \(moviePathUrl)");
+                    println("ERROR: video was shot in portrait mode: \(sourceAsset.debugDescription)");
                 }
                 
                 // composition instructions for passthrough part of the track first
@@ -314,7 +310,7 @@ class MovieExporter: NSObject {
                 videoCompositionInstructionPassThrough.layerInstructions.append (videoLayerInstruction);
                 compositionVideo.instructions.append(videoCompositionInstructionPassThrough);
                 
-                if (index < myViewcontroller.model.movieCount-1) {
+                if (index < myViewcontroller.clipsCount-1) {
                     // composition instructions for transition  next, unless the last track
                     var videoCompositionInstructionTransition = AVMutableVideoCompositionInstruction();
                     videoCompositionInstructionTransition.timeRange = transitionTimeranges[index];
@@ -374,7 +370,7 @@ class MovieExporter: NSObject {
     // ----------------
     
     func exportVideoCrossFadeOpenGL(outputPath:String) {
-        if (myViewcontroller.model.movieCount < 2) {
+        if (myViewcontroller.clipsCount < 2) {
             println("at least two movies needed for merging");
             return;
         }
@@ -408,15 +404,14 @@ class MovieExporter: NSObject {
         var trackEndTime : CMTime = trackStartTime;
         
         // 1. step: compute times and populate above data structures with values.
-        for index in 0 ... myViewcontroller.model.movieCount-1 {
-            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
-            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+        for index in 0 ... myViewcontroller.clipsCount-1 {
+            let sourceAsset = myViewcontroller.clipAt(index)
             
             trackStartTimes.append(trackStartTime);
             
             trackEndTime = CMTimeAdd(trackStartTime, sourceAsset.duration)
             var fadeOutStartTime : CMTime!
-            if (index == myViewcontroller.model.movieCount-1) {
+            if (index == myViewcontroller.clipsCount-1) {
                 fadeOutStartTime = trackEndTime; // no fade out
             } else {
                 fadeOutStartTime = CMTimeSubtract(trackEndTime, fadeDuration)
@@ -431,7 +426,7 @@ class MovieExporter: NSObject {
                 fadeInEndTime = CMTimeAdd(trackStartTime, fadeDuration);
                 passthroughDuration = CMTimeSubtract(passthroughDuration, fadeDuration);
             }
-            if (index < myViewcontroller.model.movieCount-1) {
+            if (index < myViewcontroller.clipsCount-1) {
                 // the last clip has no fade out
                 passthroughDuration = CMTimeSubtract(passthroughDuration, fadeDuration);
             }
@@ -466,9 +461,8 @@ class MovieExporter: NSObject {
         trackAudios.append(composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID()))
         trackAudios.append(composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID()))
         
-        for index in 0 ... myViewcontroller.model.movieCount-1 {
-            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
-            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+        for index in 0 ... myViewcontroller.clipsCount-1 {
+            let sourceAsset = myViewcontroller.clipAt(index)
             
             let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
             let audios = sourceAsset.tracksWithMediaType(AVMediaTypeAudio)
@@ -502,9 +496,8 @@ class MovieExporter: NSObject {
         
         compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
         
-        for index in 0 ... myViewcontroller.model.movieCount-1 {
-            let moviePathUrl = myViewcontroller.model.movieUrlAt(index)
-            let sourceAsset = AVURLAsset(URL: moviePathUrl, options: nil)
+        for index in 0 ... myViewcontroller.clipsCount-1 {
+            let sourceAsset = myViewcontroller.clipAt(index)
             let tracks = sourceAsset.tracksWithMediaType(AVMediaTypeVideo)
             
             if tracks.count > 0 {
@@ -513,7 +506,7 @@ class MovieExporter: NSObject {
                 
                 var transform : CGAffineTransform = assetTrack.preferredTransform;
                 if (transform.a == 0 && transform.d == 0 && (transform.b == 1.0 || transform.b == -1.0) && (transform.c == 1.0 || transform.c == -1.0)) {
-                    println("ERROR: video was shot in portrait mode: \(moviePathUrl)");
+                    println("ERROR: video was shot in portrait mode: \(sourceAsset.debugDescription)");
                 }
                 
                 var videoCompositionInstructionPassThrough =
@@ -521,7 +514,7 @@ class MovieExporter: NSObject {
                     forTimeRange: passthroughTimeranges[index]);
                 compositionVideo.instructions.append(videoCompositionInstructionPassThrough);
                 
-                if (index < myViewcontroller.model.movieCount-1) {
+                if (index < myViewcontroller.clipsCount-1) {
                     // what is this ?! = trackID is of type Int32, which is a basic type not a class. Int, though, is a class in Swift
                     // Below constructor expects an [NSObject]
                     var trackIDs : [ Int ] = [ Int(trackVideos[0].trackID), Int(trackVideos[1].trackID) ]

@@ -79,7 +79,7 @@ class VideoPicker: NSObject, UIImagePickerControllerDelegate, UINavigationContro
     }
     
     func addMovie(#originalMediaUrl: NSURL, editedMediaUrl : NSURL) {
-        myViewController.addMovie(originalMediaUrl: originalMediaUrl, editedMediaUrl: editedMediaUrl, thumbnail: generateThumb(editedMediaUrl));
+ //       myViewController.addMovie(originalMediaUrl: originalMediaUrl, editedMediaUrl: editedMediaUrl, thumbnail: generateThumb(editedMediaUrl));
     }
     
     func generateThumb(movieUrl : NSURL) -> UIImage {
