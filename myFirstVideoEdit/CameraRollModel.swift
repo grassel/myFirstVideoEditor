@@ -122,7 +122,6 @@ class CameraRollModel: NSObject, PHPhotoLibraryChangeObserver {
         // the PHImageManager delivers the AVAsset
         var assetOptions =  PHVideoRequestOptions();
         assetOptions.deliveryMode = PHVideoRequestOptionsDeliveryMode.Automatic;
-        
         self.imageManager.requestPlayerItemForVideo(asset, options: assetOptions) { ( avPlayerItemResult : AVPlayerItem!, info :[NSObject : AnyObject]!) -> Void in
             if (avPlayerItemResult == nil) {
                 println ("fetchAssetFullAsync: index \(index), no video asset found");

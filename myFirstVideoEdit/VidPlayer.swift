@@ -69,6 +69,8 @@ class VidPlayer: NSObject {
         self.avPlayer.removeTimeObserver(self.avPlayerTimeObserverId)
     }
     
+    // this is the play command to be used for PHAsset as included in PHFetchResult array
+    // (the user's videos in camera roll).
     func playAsset(assetIndex : Int) {
         self.playingModelIndex = assetIndex;
         
@@ -88,6 +90,12 @@ class VidPlayer: NSObject {
         });
     }
     
+    // this is the play command to be used for the composite movie
+    func playAVComposiiton (composition : AVComposition) {
+        var playerItem = AVPlayerItem(asset: composition)
+        self.setupAndPlayItem(playerItem);
+    }
+
     private func setupAndPlayItem(item : AVPlayerItem!) {
         if (item == nil) {
             println("setupAndPlayerItem item is nil. Ignoring");

@@ -11,6 +11,7 @@ import CoreMedia;
 import AVFoundation;
 import MediaPlayer
 import QuartzCore;
+import Photos
 
 class MovieExporter: NSObject {
     var myViewcontroller : MainScreenViewController!;
@@ -27,7 +28,7 @@ class MovieExporter: NSObject {
         
         // the final composition, consisting of a video and an audio track.
         var composition = AVMutableComposition()
-        var compositionVideo = AVMutableVideoComposition();
+         var compositionVideo = AVMutableVideoComposition();
         compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
         var videoSize : CGSize!  // the render size, need to get this from the video tracks
        // compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
