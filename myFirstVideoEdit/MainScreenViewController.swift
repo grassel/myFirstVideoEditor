@@ -35,7 +35,11 @@ class MainScreenViewController: UIViewController {
     
     // FIXME: use AVPlayerItem instead of MPMoviePlayer? -
     // check if AVPlayerItem class can play AVMutableComposition without need to export first.
-    var moviePlayer:MPMoviePlayerController!
+    var moviePlayer:VidPlayer!
+    
+    // the AVComposiiton that's  been created and playing in VidPlayer.
+    // FIXME: move this property to VidPlayer
+    var playingComposition : AVComposition!;
     
     // the view model
     var movieThumbsImageViews : [UIImageView] = [UIImageView]();
@@ -134,7 +138,7 @@ class MainScreenViewController: UIViewController {
         ];
         movieThumbsImages = [UIImage](count: clipsModel.movieCountMax, repeatedValue: UIImage());
         
-        self.moviePlayer = MPMoviePlayerController();
+        /* self.moviePlayer = MPMoviePlayerController();
         self.moviePlayer.view.frame = viewForMovie.bounds;
         self.moviePlayer.view.autoresizingMask =
             UIViewAutoresizing.FlexibleWidth |
@@ -143,6 +147,7 @@ class MainScreenViewController: UIViewController {
         moviePlayer.controlStyle = MPMovieControlStyle.Embedded; // Controls for an embedded view are displayed. The controls include a start/pause button, a scrubber bar, and a button for toggling between fullscreen and embedded display modes.
         
         self.viewForMovie.addSubview(self.moviePlayer.view)
+        */
         
         transitionStyle = transitionStyleEnum.crossDisolve
     }
@@ -152,6 +157,14 @@ class MainScreenViewController: UIViewController {
         waitIndicator.layer.zPosition = 9999; // always on top
         updateToolbarButtonStates();
         updateWaitIndicator();
+        
+        self.moviePlayer = VidPlayer(parentView: viewForMovie)
+    }
+    
+    
+    override func viewWillDisappear(animated: Bool) {
+        self.moviePlayer = nil;  // get rid of the VidPlayer object
+        super.viewWillDisappear(animated)
     }
     
     func updateToolbarButtonStates() {
@@ -220,15 +233,24 @@ class MainScreenViewController: UIViewController {
         playMovie(url);
     }
     
+    func playMovie(composition : AVComposition) {
+        if (self.playingComposition != nil) {
+            self.moviePlayer.stopPlaying()
+        }
+        
+        self.playingComposition = composition;
+        self.moviePlayer.play(avcomposition: self.playingComposition)
+    }
+    
     func playMovie(url : NSURL) {
-        println("playMovie: url=\(url)");
-        moviePlayer.contentURL = url
-        moviePlayer.movieSourceType = MPMovieSourceType.File
+  //      println("playMovie: url=\(url)");
+ //       moviePlayer.contentURL = url
+ //       moviePlayer.movieSourceType = MPMovieSourceType.File
         
-        moviePlayer.prepareToPlay();
-        moviePlayer.play();
+ //       moviePlayer.prepareToPlay();
+ //       moviePlayer.play();
         
-        println("playMovie: \(url) ... ");
+ //       println("playMovie: \(url) ... ");
     }
     
     

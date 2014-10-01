@@ -48,6 +48,7 @@ class VidPlayer: NSObject {
         // unregister for notifications
         var notifCtr = NSNotificationCenter.defaultCenter();
         if (self.avPlayerItem != nil) {
+            self.avPlayerItem.removeObserver(self, forKeyPath: "status")
             notifCtr.removeObserver(self.avPlayerItem)
         }
         self.avPlayer.removeTimeObserver(self.avPlayerTimeObserverId)
@@ -69,6 +70,9 @@ class VidPlayer: NSObject {
     // this is the play command to be used for the composite movie
     func play (avcomposition composition : AVComposition) {
         var playerItem = AVPlayerItem(asset: composition)
+        
+        playerItem.seekingWaitsForVideoCompositionRendering = true;
+        
         self.setupAndPlayItem(playerItem);
     }
 
@@ -83,10 +87,17 @@ class VidPlayer: NSObject {
         var notifCtr = NSNotificationCenter.defaultCenter();
         notifCtr.addObserverForName(AVPlayerItemDidPlayToEndTimeNotification, object: self.avPlayerItem, queue: NSOperationQueue.mainQueue(), usingBlock: self.playerItemDidReachEnd)
         
-        self.avPlayer!.seekToTime(kCMTimeZero);
+        println ("playeritem duration: \(CMTimeGetSeconds(self.avPlayerItem.duration)) ");
+        if (self.avPlayerItem.status != AVPlayerItemStatus.ReadyToPlay) {
+            println ("playeritem not ready to play!");
+        }
+        
+        self.avPlayer!.seekToTime(kCMTimeZero)
+        
         self.avPlayerTimeObserverId = self.avPlayer.addPeriodicTimeObserverForInterval(CMTimeMake(5, 25) /* 30fps */, queue: nil, usingBlock: self.playerTimeUpdate)
         
-        self.avPlayer!.play()
+        self.avPlayerItem.addObserver(self, forKeyPath: "status", options: nil, context: nil)
+        // wait for theobserved status to become readToPlay: self.avPlayer!.play()
     }
     
     private func playerTimeUpdate(time : CMTime) {
@@ -94,19 +105,26 @@ class VidPlayer: NSObject {
     }
     
     internal func playerItemDidReachEnd(notification : NSNotification!) {
-        println("playerItemDidReachEnd");
+        println("playerItemDidReachEnd, rewining and playing again.");
+        self.avPlayer!.seekToTime(kCMTimeZero)
+        self.avPlayer!.play()
     }
     
     // we do not use the observer mechanism, method is not used
-    internal override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
-        if (keyPath != nil && object != nil) {
-            println("observeValueForKeyPath: \(keyPath!), \(object!.description)");
+    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
+        if (keyPath == "status" && object != nil && (object! as NSObject == self.avPlayerItem)) {
+            if (self.avPlayerItem.status == AVPlayerItemStatus.ReadyToPlay) {
+                // ready to play
+                println("VidPlayer: PlayerItem ready to play");
+                self.avPlayer!.play()
+            }
+        } else {
+            println("VidPlayer: observeValueForKeyPath unexpected object / keyPath=\(keyPath)")
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context);
         }
-        
-        super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context);
     }
-    
-    
+
+
     var avPlayerItem : AVPlayerItem!;
     var avPlayer : AVPlayer!
     

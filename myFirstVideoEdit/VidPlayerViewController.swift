@@ -39,7 +39,9 @@ class VidPlayerViewController: UIViewController {
     }
     
 
-   @IBAction func cancelSelected(sender: AnyObject) {
+    @IBAction func cancelSelected(sender: AnyObject) {
+        self.vidPlayer.stopPlaying();
+
         // got back to the list of my videos
         self.navigationController?.popViewControllerAnimated(true)
     }

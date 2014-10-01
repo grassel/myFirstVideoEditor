@@ -124,6 +124,9 @@ class MovieExporter: NSObject {
         // use the most senior parent to inLayer, and the youngest layer as postProcessingAsVideoLayer) in below call.
         compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caParentLayer, inLayer: caRootLayer);
         
+         self.myViewcontroller.playMovie(composition)
+        
+        /*
         // prepare to export movie
         let guid = NSProcessInfo.processInfo().globallyUniqueString
         let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
@@ -153,6 +156,7 @@ class MovieExporter: NSObject {
                 self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
             }
         })
+*/
     }
     
 
@@ -530,6 +534,9 @@ class MovieExporter: NSObject {
             }
         }
         
+        self.myViewcontroller.playMovie(composition)
+
+        /*
         // 4th step: prepare to export movie
         let guid = NSProcessInfo.processInfo().globallyUniqueString
         let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
@@ -559,6 +566,7 @@ class MovieExporter: NSObject {
                 self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
             }
         })
+*/
     }
 
 }
