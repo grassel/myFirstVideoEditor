@@ -40,7 +40,7 @@ class myFirstVideoEditFetchVideoThumbsTests: XCTestCase, CameraModelDelegate {
         cameraModel!.requestAllVideos();
         var thumbsToload = cameraModel!.count;
         for index in 0 ... cameraModel!.count-1 {
-            cameraModel.fetchAssetBasicInfoAtIndexAsync(index, placeholderImage: UIImage(named: "placeholderBlack"), handler: { (indexBack : Int, createDateString : String, duration : Float64, imageBack : UIImage) -> Void in
+            cameraModel.fetchAssetBasicInfoAtIndexAsync(index, placeholderImage: UIImage(named: "placeholderBlack")!, handler: { (indexBack : Int, createDateString : String, duration : Float64, imageBack : UIImage) -> Void in
                 println("thumbnail image for video \(indexBack), created: \(createDateString), dur=\(duration)sec, \(imageBack.debugDescription), width x height = \(imageBack.size.width) x \(imageBack.size.height)");
                 thumbsToload--;
                 if (thumbsToload == 0) {

@@ -98,7 +98,7 @@ class CameraRollModel: NSObject, PHPhotoLibraryChangeObserver {
                     var time : CMTime = CMTimeMake(1,2);
                     generator.maximumSize = CGSize(width: 240, height: 160)
                     var oneRef : CGImageRef = generator.copyCGImageAtTime(time, actualTime: nil, error: nil);
-                    var image : UIImage = UIImage(CGImage: oneRef);
+                    var image : UIImage = UIImage(CGImage: oneRef)!;
                     var duration : Float64 = CMTimeGetSeconds(videoAsset.duration)
                     var creationDate : AVMetadataItem! = videoAsset.creationDate
                     var creationDateString = "unknown"

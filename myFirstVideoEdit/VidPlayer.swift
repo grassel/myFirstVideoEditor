@@ -107,13 +107,13 @@ class VidPlayer: NSObject {
     
     internal func playerItemDidReachEnd(notification : NSNotification!) {
         println("playerItemDidReachEnd, rewining and playing again.");
-        self.avPlayer!.seekToTime(kCMTimeZero)
-        self.avPlayer!.play()
+        self.avPlayer.seekToTime(kCMTimeZero)
+        self.avPlayer.play()
     }
     
     // we do not use the observer mechanism, method is not used
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
-        if (keyPath == "status" && object != nil && (object! as NSObject == self.avPlayerItem)) {
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+        if (keyPath == "status" && ((object as NSObject) == self.avPlayerItem)) {
             if (self.avPlayerItem.status == AVPlayerItemStatus.ReadyToPlay) {
                 // ready to play
                 println("VidPlayer: PlayerItem ready to play");

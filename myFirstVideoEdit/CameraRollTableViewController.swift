@@ -77,7 +77,7 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
         cell.tag = currentTag;
         
         cameraRollModel.fetchAssetBasicInfoAtIndexAsync(rowIndex,
-            placeholderImage: UIImage(named: "placeholderBlack"), handler: { (indexBack : Int, creationDateString : String, duration : Float64, imageResult : UIImage) -> Void in
+            placeholderImage: UIImage(named: "placeholderBlack")!, handler: { (indexBack : Int, creationDateString : String, duration : Float64, imageResult : UIImage) -> Void in
                 // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
                 if (cell.tag == currentTag) {
                     dispatch_async(dispatch_get_main_queue(), {

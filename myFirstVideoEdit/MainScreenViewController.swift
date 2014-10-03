@@ -202,7 +202,7 @@ class MainScreenViewController: UIViewController {
     @IBAction func clearClipsSelected(sender: AnyObject) {
         clipsModel = ClipModel();
         for index in 0 ... clipsModel.movieCountMax-1 {
-            movieThumbsImages[index] = UIImage(named: "placeholderBlack") // from image assets
+            movieThumbsImages[index] = UIImage(named: "placeholderBlack")! // from image assets
             movieThumbsImageViews[index].image = movieThumbsImages[index];
         }
         videoAddedSinceLastExport = false;
