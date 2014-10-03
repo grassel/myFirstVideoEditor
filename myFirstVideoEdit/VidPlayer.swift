@@ -68,8 +68,9 @@ class VidPlayer: NSObject {
     }
     
     // this is the play command to be used for the composite movie
-    func play (avcomposition composition : AVComposition) {
-        var playerItem = AVPlayerItem(asset: composition)
+    func play (avcomposition composition : AVComposition, avvideocomposition: AVVideoComposition) {
+        var playerItem : AVPlayerItem = AVPlayerItem(asset: composition)
+        playerItem.videoComposition = avvideocomposition;
         
         playerItem.seekingWaitsForVideoCompositionRendering = true;
         

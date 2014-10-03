@@ -229,17 +229,15 @@ class MainScreenViewController: UIViewController {
     func movieExportCompletedOK(url : NSURL) {
         isExporting = false;
         videoAddedSinceLastExport = false;
-        
-        playMovie(url);
     }
     
-    func playMovie(composition : AVComposition) {
+    func playMovie(composition : AVComposition, videocomposition : AVVideoComposition) {
         if (self.playingComposition != nil) {
             self.moviePlayer.stopPlaying()
         }
         
         self.playingComposition = composition;
-        self.moviePlayer.play(avcomposition: self.playingComposition)
+        self.moviePlayer.play(avcomposition: self.playingComposition, avvideocomposition: videocomposition)
     }
     
     func playMovie(url : NSURL) {
