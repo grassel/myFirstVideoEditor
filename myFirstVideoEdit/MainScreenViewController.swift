@@ -32,6 +32,7 @@ class MainScreenViewController: UIViewController {
     @IBOutlet weak var addVideoButton: UIBarButtonItem!
     @IBOutlet weak var clearButton: UIBarButtonItem!
     @IBOutlet weak var exportButton: UIBarButtonItem!
+    @IBOutlet weak var playButton: UIButton!
     
     // FIXME: use AVPlayerItem instead of MPMoviePlayer? -
     // check if AVPlayerItem class can play AVMutableComposition without need to export first.
@@ -138,17 +139,6 @@ class MainScreenViewController: UIViewController {
         ];
         movieThumbsImages = [UIImage](count: clipsModel.movieCountMax, repeatedValue: UIImage());
         
-        /* self.moviePlayer = MPMoviePlayerController();
-        self.moviePlayer.view.frame = viewForMovie.bounds;
-        self.moviePlayer.view.autoresizingMask =
-            UIViewAutoresizing.FlexibleWidth |
-            UIViewAutoresizing.FlexibleHeight;
-        moviePlayer.fullscreen = false;
-        moviePlayer.controlStyle = MPMovieControlStyle.Embedded; // Controls for an embedded view are displayed. The controls include a start/pause button, a scrubber bar, and a button for toggling between fullscreen and embedded display modes.
-        
-        self.viewForMovie.addSubview(self.moviePlayer.view)
-        */
-        
         transitionStyle = transitionStyleEnum.crossDisolve
     }
     
@@ -163,6 +153,7 @@ class MainScreenViewController: UIViewController {
     
     
     override func viewWillDisappear(animated: Bool) {
+        self.moviePlayer.stopPlaying()
         self.moviePlayer = nil;  // get rid of the VidPlayer object
         super.viewWillDisappear(animated)
     }
@@ -171,6 +162,7 @@ class MainScreenViewController: UIViewController {
         addVideoButton.enabled = (!isExporting && clipsModel.movieCount < clipsModel.movieCountMax);
         exportButton.enabled = !isExporting &&  videoAddedSinceLastExport && (clipsModel.movieCount >= 2);
         clearButton.enabled = !isExporting && (clipsModel.movieCount > 0);
+        playButton.enabled = (clipsModel.movieCount >= 2)
     }
     
     func updateWaitIndicator() {
@@ -180,18 +172,7 @@ class MainScreenViewController: UIViewController {
             waitIndicator.stopAnimating()
         }
     }
-    /*
-    select a new video using UIImagePicker
-    and append it to movieUrls
-    */
-    /*
-    @IBAction func addVideoSelected(sender: AnyObject) {
-    if (videoPicker == nil) {
-    self.videoPicker = VideoPicker(viewController: self);
-    }
-    videoPicker.selectVideo();
-    }
-    */
+
     
     @IBAction func addVideoSelected(sender: AnyObject) {
         var vc = CameraRollTableViewController();
@@ -212,6 +193,24 @@ class MainScreenViewController: UIViewController {
     compositing the movie using AVFoundation
     and  QuartzCore for fade animations
     */
+    @IBAction func playButtonSelected(sender: AnyObject) {
+        // sync with exporting
+        // enable this button when composiotion are not nil
+        switch transitionStyle {
+     //   case transitionStyleEnum.rampInOut:
+            //  movieExporter.
+     //   case transitionStyleEnum.crossFade:
+            // movieExporter
+        case transitionStyleEnum.crossDisolve:
+            // FIXME: do a composition after adding a new video!
+            movieExporter.compositeVideoCrossFadeOpenGL();
+            moviePlayer.play(avcomposition: self.movieExporter.composition,
+                avvideocomposition: self.movieExporter.videocomposition)
+        default:
+            println("FIXME:");
+            //
+        }
+    }
     
     @IBAction func exportMovieSelected(sender: AnyObject) {
         isExporting = true;
@@ -221,15 +220,18 @@ class MainScreenViewController: UIViewController {
         case transitionStyleEnum.crossFade:
             movieExporter.exportVideoCrossFade(applicationDocumentsDirectory())
         case transitionStyleEnum.crossDisolve:
-            movieExporter.exportVideoCrossFadeOpenGL(applicationDocumentsDirectory());
+            movieExporter.compositeVideoCrossFadeOpenGL();
+            movieExporter.exportVideoCrossFadeOpenGLAsync(applicationDocumentsDirectory(),
+                whenDone: { () -> Void in
+                    self.isExporting = false;
+                },
+                whenFailed: { () -> Void in
+                    self.isExporting = false;
+                    // FIXME
+            })
         }
     }
     
-    
-    func movieExportCompletedOK(url : NSURL) {
-        isExporting = false;
-        videoAddedSinceLastExport = false;
-    }
     
     func playMovie(composition : AVComposition, videocomposition : AVVideoComposition) {
         if (self.playingComposition != nil) {
@@ -239,18 +241,6 @@ class MainScreenViewController: UIViewController {
         self.playingComposition = composition;
         self.moviePlayer.play(avcomposition: self.playingComposition, avvideocomposition: videocomposition)
     }
-    
-    func playMovie(url : NSURL) {
-  //      println("playMovie: url=\(url)");
- //       moviePlayer.contentURL = url
- //       moviePlayer.movieSourceType = MPMovieSourceType.File
-        
- //       moviePlayer.prepareToPlay();
- //       moviePlayer.play();
-        
- //       println("playMovie: \(url) ... ");
-    }
-    
     
     func applicationDocumentsDirectory() -> String {
         

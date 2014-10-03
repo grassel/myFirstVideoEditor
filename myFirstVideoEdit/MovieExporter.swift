@@ -14,6 +14,13 @@ import QuartzCore;
 import Photos
 
 class MovieExporter: NSObject {
+    
+    // these two var's include the result of the composition processs
+    // they are input to AVPlayer/AVItemPlayer and the AVEXportSession
+    var composition : AVComposition!;
+    var videocomposition : AVVideoComposition!
+    
+    
     var myViewcontroller : MainScreenViewController!;
     
     init(myViewcontroller : MainScreenViewController) {
@@ -28,10 +35,10 @@ class MovieExporter: NSObject {
         
         // the final composition, consisting of a video and an audio track.
         var composition = AVMutableComposition()
-         var compositionVideo = AVMutableVideoComposition();
+        var compositionVideo = AVMutableVideoComposition();
         compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
         var videoSize : CGSize!  // the render size, need to get this from the video tracks
-       // compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
+        // compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
         compositionVideo.frameDuration = CMTimeMake(1,30); // 30fps
         let trackVideo:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
         let trackAudio:AVMutableCompositionTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
@@ -124,7 +131,7 @@ class MovieExporter: NSObject {
         // use the most senior parent to inLayer, and the youngest layer as postProcessingAsVideoLayer) in below call.
         compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caParentLayer, inLayer: caRootLayer);
         
-         self.myViewcontroller.playMovie(composition, videocomposition: compositionVideo)
+        self.myViewcontroller.playMovie(composition, videocomposition: compositionVideo)
         
         /*
         // prepare to export movie
@@ -139,27 +146,27 @@ class MovieExporter: NSObject {
         
         
         exporter.exportAsynchronouslyWithCompletionHandler({
-            // this handler gets called in a background thread!
-            switch exporter.status
-                {
-            case  AVAssetExportSessionStatus.Failed:
-                println("failed url=\(exporter.outputURL), error=\(exporter.error)")
-                return;
-            case AVAssetExportSessionStatus.Cancelled:
-                println("cancelled \(exporter.error)")
-                return;
-            default:
-                println("complete")
-            }
-            
-            NSOperationQueue.mainQueue().addOperationWithBlock(){
-                self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
-            }
+        // this handler gets called in a background thread!
+        switch exporter.status
+        {
+        case  AVAssetExportSessionStatus.Failed:
+        println("failed url=\(exporter.outputURL), error=\(exporter.error)")
+        return;
+        case AVAssetExportSessionStatus.Cancelled:
+        println("cancelled \(exporter.error)")
+        return;
+        default:
+        println("complete")
+        }
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock(){
+    //    self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
+        }
         })
-*/
+        */
     }
     
-
+    
     
     func exportVideoCrossFade(outputPath:String) {
         if (myViewcontroller.clipsCount < 2) {
@@ -185,7 +192,7 @@ class MovieExporter: NSObject {
         
         // the time range at the end of a track when transitioning to the next clip.
         // for the ending clip these are the last 'fadeDurSec' secs, for the starting clip
-        // these are the first 'fadeDurSec' secs, i.e. the time the two tracks temporarily overlap 
+        // these are the first 'fadeDurSec' secs, i.e. the time the two tracks temporarily overlap
         // in the compoition.
         // note, the last track has no !
         var transitionTimeranges = [CMTimeRange]();
@@ -198,9 +205,9 @@ class MovieExporter: NSObject {
         // 1. step: compute times and populate above data structures with values.
         for index in 0 ... myViewcontroller.clipsCount-1 {
             let sourceAsset = myViewcontroller.clipAt(index)
-
+            
             trackStartTimes.append(trackStartTime);
-
+            
             trackEndTime = CMTimeAdd(trackStartTime, sourceAsset.duration)
             var fadeOutStartTime : CMTime!
             if (index == myViewcontroller.clipsCount-1) {
@@ -272,20 +279,20 @@ class MovieExporter: NSObject {
         }
         
         // 3rd step: define instructions how to composite video from pre-defined two tracks into one output.
-        // one AVMutableVideoComposition object has a list of AVMutableVideoCompositionInstruction objects. 
+        // one AVMutableVideoComposition object has a list of AVMutableVideoCompositionInstruction objects.
         // each AVMutableVideoCompositionInstruction defines the compostion for a 'timeRange'. Those time ranges
         // must cover the entire duration of the compositive movie, and they must not overlap each other.
         // Further, AVMutableVideoCompositionInstruction includes a list of AVMutableVideoCompositionLayerInstruction.
         // Exactly one AVMutableVideoCompositionLayerInstruction object is needed per AVMutableCompositionTrack (see 2nd step)
-        // so it links the layer to its video track source. Therefore, for passthrough timeRange, only one 
-        // AVMutableVideoCompositionLayerInstruction object is needed, and for a cross-fade two such objects refer to the 
+        // so it links the layer to its video track source. Therefore, for passthrough timeRange, only one
+        // AVMutableVideoCompositionLayerInstruction object is needed, and for a cross-fade two such objects refer to the
         // two clips (and the track they are contained in).
         // opacity animation, transformations are defined on a AVMutableVideoCompositionLayerInstruction object.
         // note that the API only allows defining one opacity-ramp per AVMutableVideoCompositionLayerInstruction object.
         var compositionVideo = AVMutableVideoComposition();
-       // compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
+        // compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
         var videoSize : CGSize!  // the render size, need to get this from the video tracks
-
+        
         compositionVideo.frameDuration = CMTimeMake(1,30); // 30fps
         
         compositionVideo.instructions = [ AVMutableVideoCompositionInstruction ]();
@@ -308,7 +315,7 @@ class MovieExporter: NSObject {
                 var videoCompositionInstructionPassThrough = AVMutableVideoCompositionInstruction();
                 videoCompositionInstructionPassThrough.timeRange = passthroughTimeranges[index];
                 videoCompositionInstructionPassThrough.layerInstructions = [AVMutableVideoCompositionLayerInstruction]();
-
+                
                 var videoLayerInstruction : AVMutableVideoCompositionLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideos[index % 2])
                 videoLayerInstruction.setTransform(transform, atTime: passthroughTimeranges[index].start);
                 videoCompositionInstructionPassThrough.layerInstructions.append (videoLayerInstruction);
@@ -354,7 +361,7 @@ class MovieExporter: NSObject {
         exporter.exportAsynchronouslyWithCompletionHandler({
             // this handler gets called in a background thread!
             switch exporter.status
-                {
+            {
             case  AVAssetExportSessionStatus.Failed:
                 println("failed url=\(exporter.outputURL), error=\(exporter.error)")
                 return;
@@ -366,14 +373,14 @@ class MovieExporter: NSObject {
             }
             
             NSOperationQueue.mainQueue().addOperationWithBlock(){
-                self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
+            //    self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
             }
         })
     }
     
     // ----------------
     
-    func exportVideoCrossFadeOpenGL(outputPath:String) {
+    func compositeVideoCrossFadeOpenGL() {
         if (myViewcontroller.clipsCount < 2) {
             println("at least two movies needed for merging");
             return;
@@ -490,7 +497,7 @@ class MovieExporter: NSObject {
         
         // 3rd step: define instructions how to composite video from pre-defined two tracks into one output.
         var compositionVideo = AVMutableVideoComposition();
-       // compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
+        // compositionVideo.renderSize = CGSizeMake(640, 480);  // render to VGA size, note same size in CALayer below!
         compositionVideo.renderSize = videoSize // see fIXME above
         compositionVideo.renderScale = 1.0; // no scale
         
@@ -533,19 +540,24 @@ class MovieExporter: NSObject {
                 }
             }
         }
+        self.composition = composition
+        self.videocomposition = compositionVideo;
+    }
+    
+    func exportVideoCrossFadeOpenGLAsync(outputPath : String, whenDone : () -> Void, whenFailed : () -> Void ) {
         
-
-        self.myViewcontroller.playMovie(composition, videocomposition: compositionVideo);
-
-        /*
-
+        if (self.composition == nil || self.videocomposition == nil) {
+            println(" no video composition, can not export.")
+            return;
+        }
+        
         // 4th step: prepare to export movie
         let guid = NSProcessInfo.processInfo().globallyUniqueString
         let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
         let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
         
-        var exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)
-        exporter.videoComposition = compositionVideo;
+        var exporter = AVAssetExportSession(asset: self.composition, presetName: AVAssetExportPresetHighestQuality)
+        exporter.videoComposition = self.videocomposition;
         exporter.outputURL = completeMovieUrl
         exporter.outputFileType = AVFileTypeMPEG4   //AVFileTypeQuickTimeMovie
         
@@ -553,23 +565,18 @@ class MovieExporter: NSObject {
         exporter.exportAsynchronouslyWithCompletionHandler({
             // this handler gets called in a background thread!
             switch exporter.status
-                {
-            case  AVAssetExportSessionStatus.Failed:
-                println("failed url=\(exporter.outputURL), error=\(exporter.error)")
-                return;
+            {
+            case  AVAssetExportSessionStatus.Completed:
+                println("complete")
+                NSOperationQueue.mainQueue().addOperationWithBlock(whenDone)
             case AVAssetExportSessionStatus.Cancelled:
                 println("cancelled \(exporter.error)")
-                return;
+            case  AVAssetExportSessionStatus.Failed:
+                println("failed url=\(exporter.outputURL), error=\(exporter.error)")
+                NSOperationQueue.mainQueue().addOperationWithBlock(whenFailed)
             default:
-                println("complete")
-            }
-            
-            NSOperationQueue.mainQueue().addOperationWithBlock(){
-
-                self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
+                println("exporter.exportAsynchronouslyWithCompletionHandler: unknown reason for terminating");
             }
         })
-        */
     }
-
 }

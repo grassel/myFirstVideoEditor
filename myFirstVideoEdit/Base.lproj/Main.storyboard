@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="L1G-ef-pYw">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6249" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="L1G-ef-pYw">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6243"/>
     </dependencies>
     <scenes>
         <!--Video Editor-->
@@ -24,6 +24,14 @@
                                         <rect key="contentStretch" x="1" y="1" width="1" height="1"/>
                                         <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </activityIndicatorView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZ2-Wk-gte">
+                                        <rect key="frame" x="19" y="333" width="80" height="30"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="15"/>
+                                        <state key="normal" title="Play >"/>
+                                        <connections>
+                                            <action selector="playButtonSelected:" destination="dSY-ef-eQv" eventType="touchUpInside" id="fp3-PQ-GN2"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -109,6 +117,7 @@
                         <outlet property="movieThumbImage2" destination="Y7L-OZ-00o" id="v3b-X9-BBT"/>
                         <outlet property="movieThumbImage3" destination="ixH-Fk-713" id="Jyb-qe-GNR"/>
                         <outlet property="movieThumbImage4" destination="kQW-Rh-YNp" id="NIC-pP-XQa"/>
+                        <outlet property="playButton" destination="sZ2-Wk-gte" id="fhU-eq-WtY"/>
                         <outlet property="transitionIndicatorButton1" destination="Ela-Yl-xp8" id="26f-Pi-hSZ"/>
                         <outlet property="transitionIndicatorButton2" destination="zJ7-fU-FLv" id="lYa-UE-SEm"/>
                         <outlet property="transitionIndicatorButton3" destination="5oQ-hs-egR" id="qjN-Kn-CZl"/>

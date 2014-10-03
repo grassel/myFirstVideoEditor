@@ -6,7 +6,7 @@ import QuartzCore;
 
 class VidPlayer: NSObject {
     
-
+    
     init(parentView : UIView){
         self.parentView = parentView;
         super.init()
@@ -32,26 +32,9 @@ class VidPlayer: NSObject {
         playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
         parentLayer.addSublayer(playerLayer)
     }
-
     
     private func deinstalAVPlayerFromViewHierarchie() {
         self.playerLayer.removeFromSuperlayer();
-    }
-    
-    
-    func stopPlaying() {
-        if (self.avPlayer == nil) {
-            return;
-        }
-        self.avPlayer.pause()
-        
-        // unregister for notifications
-        var notifCtr = NSNotificationCenter.defaultCenter();
-        if (self.avPlayerItem != nil) {
-            self.avPlayerItem.removeObserver(self, forKeyPath: "status")
-            notifCtr.removeObserver(self.avPlayerItem)
-        }
-        self.avPlayer.removeTimeObserver(self.avPlayerTimeObserverId)
     }
     
     
@@ -76,12 +59,18 @@ class VidPlayer: NSObject {
         
         self.setupAndPlayItem(playerItem);
     }
-
+    
     private func setupAndPlayItem(item : AVPlayerItem!) {
         if (item == nil) {
             println("setupAndPlayItem item is nil. Ignoring");
             return;
         }
+        
+        if (self.avPlayerItem  != nil) {
+            // we have a previous playerItem, for which we need to unregister as an observer
+            self.stopPlaying();
+        }
+        
         self.avPlayerItem = item!;
         self.avPlayer!.replaceCurrentItemWithPlayerItem(self.avPlayerItem)
         
@@ -101,9 +90,35 @@ class VidPlayer: NSObject {
         // wait for theobserved status to become readToPlay: self.avPlayer!.play()
     }
     
+    
+    func stopPlaying() {
+        if (self.avPlayer == nil) {
+            return;
+        }
+        self.avPlayer.pause()
+        unregisterObservers()
+    }
+
+    
+    private func unregisterObservers() {
+        // unregister for notifications
+        var notifCtr = NSNotificationCenter.defaultCenter();
+        if (self.avPlayerItem != nil) {
+            self.avPlayerItem.removeObserver(self, forKeyPath: "status")
+            notifCtr.removeObserver(self.avPlayerItem)
+            self.avPlayerItem = nil
+        }
+        if (self.avPlayer != nil) {
+            self.avPlayer.removeTimeObserver(self.avPlayerTimeObserverId)
+        }
+    }
+    
+    
+    
     private func playerTimeUpdate(time : CMTime) {
         println("playerTimeUpdate \(CMTimeGetSeconds(time))");
     }
+    
     
     internal func playerItemDidReachEnd(notification : NSNotification!) {
         println("playerItemDidReachEnd, rewining and playing again.");
@@ -124,8 +139,8 @@ class VidPlayer: NSObject {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context);
         }
     }
-
-
+    
+    
     var avPlayerItem : AVPlayerItem!;
     var avPlayer : AVPlayer!
     
@@ -137,5 +152,4 @@ class VidPlayer: NSObject {
     
     // the return value of addBoundaryTimeObserverForTimes:queue:usingBlock:
     var avPlayerTimeObserverId : AnyObject!
-
 }
