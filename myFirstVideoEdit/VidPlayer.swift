@@ -55,8 +55,6 @@ class VidPlayer: NSObject {
         var playerItem : AVPlayerItem = AVPlayerItem(asset: composition)
         playerItem.videoComposition = avvideocomposition;
         
-        playerItem.seekingWaitsForVideoCompositionRendering = true;
-        
         self.setupAndPlayItem(playerItem);
     }
     
@@ -73,7 +71,9 @@ class VidPlayer: NSObject {
         
         self.avPlayerItem = item!;
         self.avPlayer!.replaceCurrentItemWithPlayerItem(self.avPlayerItem)
-        
+
+        self.avPlayerItem.seekingWaitsForVideoCompositionRendering = true;
+
         var notifCtr = NSNotificationCenter.defaultCenter();
         notifCtr.addObserverForName(AVPlayerItemDidPlayToEndTimeNotification, object: self.avPlayerItem, queue: NSOperationQueue.mainQueue(), usingBlock: self.playerItemDidReachEnd)
         
@@ -87,7 +87,7 @@ class VidPlayer: NSObject {
         self.avPlayerTimeObserverId = self.avPlayer.addPeriodicTimeObserverForInterval(CMTimeMake(5, 25) /* 30fps */, queue: nil, usingBlock: self.playerTimeUpdate)
         
         self.avPlayerItem.addObserver(self, forKeyPath: "status", options: nil, context: nil)
-        // wait for theobserved status to become readToPlay: self.avPlayer!.play()
+        // wait for the observed status to become readToPlay: self.avPlayer!.play()
     }
     
     
@@ -101,11 +101,10 @@ class VidPlayer: NSObject {
 
     
     private func unregisterObservers() {
-        // unregister for notifications
         var notifCtr = NSNotificationCenter.defaultCenter();
         if (self.avPlayerItem != nil) {
             self.avPlayerItem.removeObserver(self, forKeyPath: "status")
-            notifCtr.removeObserver(self.avPlayerItem)
+            NSNotificationCenter.defaultCenter().removeObserver(self.avPlayerItem)
             self.avPlayerItem = nil
         }
         if (self.avPlayer != nil) {

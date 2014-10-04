@@ -13,13 +13,12 @@ import MediaPlayer
 import QuartzCore;
 import Photos
 
-class MovieExporter: NSObject {
+class MovieCompositerExporter: NSObject {
     
     // these two var's include the result of the composition processs
     // they are input to AVPlayer/AVItemPlayer and the AVEXportSession
     var composition : AVComposition!;
     var videocomposition : AVVideoComposition!
-    
     
     var myViewcontroller : MainScreenViewController!;
     
@@ -27,7 +26,7 @@ class MovieExporter: NSObject {
         self.myViewcontroller = myViewcontroller;
     }
     
-    func exportVideoRampInOut(outputPath:String) {
+    func compositeVideoRampInOut() {
         if (myViewcontroller.clipsCount < 2) {
             println("at least two movies needed for merging");
             return;
@@ -131,44 +130,12 @@ class MovieExporter: NSObject {
         // use the most senior parent to inLayer, and the youngest layer as postProcessingAsVideoLayer) in below call.
         compositionVideo.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: caParentLayer, inLayer: caRootLayer);
         
-        self.myViewcontroller.playMovie(composition, videocomposition: compositionVideo)
-        
-        /*
-        // prepare to export movie
-        let guid = NSProcessInfo.processInfo().globallyUniqueString
-        let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
-        let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
-        
-        var exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)
-        exporter.videoComposition = compositionVideo;
-        exporter.outputURL = completeMovieUrl
-        exporter.outputFileType = AVFileTypeMPEG4   //AVFileTypeQuickTimeMovie
-        
-        
-        exporter.exportAsynchronouslyWithCompletionHandler({
-        // this handler gets called in a background thread!
-        switch exporter.status
-        {
-        case  AVAssetExportSessionStatus.Failed:
-        println("failed url=\(exporter.outputURL), error=\(exporter.error)")
-        return;
-        case AVAssetExportSessionStatus.Cancelled:
-        println("cancelled \(exporter.error)")
-        return;
-        default:
-        println("complete")
-        }
-        
-        NSOperationQueue.mainQueue().addOperationWithBlock(){
-    //    self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
-        }
-        })
-        */
+        self.composition = composition
+        self.videocomposition = compositionVideo;
     }
     
     
-    
-    func exportVideoCrossFade(outputPath:String) {
+    func compositeVideoCrossFade() {
         if (myViewcontroller.clipsCount < 2) {
             println("at least two movies needed for merging");
             return;
@@ -346,36 +313,8 @@ class MovieExporter: NSObject {
             compositionVideo.renderSize = videoSize // see fIXME above
             compositionVideo.renderScale = 1.0; // no scale
         }
-        
-        // 4th step: prepare to export movie
-        let guid = NSProcessInfo.processInfo().globallyUniqueString
-        let completeMovie = outputPath.stringByAppendingPathComponent(guid + "--generated-movie.mov")
-        let completeMovieUrl = NSURL(fileURLWithPath: completeMovie)
-        
-        var exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)
-        exporter.videoComposition = compositionVideo;
-        exporter.outputURL = completeMovieUrl
-        exporter.outputFileType = AVFileTypeMPEG4   //AVFileTypeQuickTimeMovie
-        
-        
-        exporter.exportAsynchronouslyWithCompletionHandler({
-            // this handler gets called in a background thread!
-            switch exporter.status
-            {
-            case  AVAssetExportSessionStatus.Failed:
-                println("failed url=\(exporter.outputURL), error=\(exporter.error)")
-                return;
-            case AVAssetExportSessionStatus.Cancelled:
-                println("cancelled \(exporter.error)")
-                return;
-            default:
-                println("complete")
-            }
-            
-            NSOperationQueue.mainQueue().addOperationWithBlock(){
-            //    self.myViewcontroller.movieExportCompletedOK(exporter.outputURL);
-            }
-        })
+        self.composition = composition
+        self.videocomposition = compositionVideo;
     }
     
     // ----------------
@@ -544,7 +483,8 @@ class MovieExporter: NSObject {
         self.videocomposition = compositionVideo;
     }
     
-    func exportVideoCrossFadeOpenGLAsync(outputPath : String, whenDone : () -> Void, whenFailed : () -> Void ) {
+    
+    func exportVideo(outputPath : String, whenDone : () -> Void, whenFailed : () -> Void ) {
         
         if (self.composition == nil || self.videocomposition == nil) {
             println(" no video composition, can not export.")

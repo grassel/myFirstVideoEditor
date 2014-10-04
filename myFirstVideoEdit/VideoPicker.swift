@@ -89,7 +89,7 @@ class VideoPicker: NSObject, UIImagePickerControllerDelegate, UINavigationContro
         generator.appliesPreferredTrackTransform = true;
         var time : CMTime = CMTimeMake(1,2);
         var oneRef : CGImageRef = generator.copyCGImageAtTime(time, actualTime: nil, error: nil);
-        var image : UIImage = UIImage(CGImage: oneRef)!;
+        var image : UIImage = UIImage(CGImage: oneRef);
         return image;
     }
 }

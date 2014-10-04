@@ -47,7 +47,7 @@ class MainScreenViewController: UIViewController {
     var movieThumbsImages : [UIImage] = [UIImage]();
     
     var videoPicker : VideoPicker!
-    var movieExporter : MovieExporter!
+    var movieExporter : MovieCompositerExporter!
     var clipsModel : ClipModel!;
     
     var videoAddedSinceLastExport : Bool = false {
@@ -132,7 +132,7 @@ class MainScreenViewController: UIViewController {
         videoAddedSinceLastExport = false;
         isExporting = false;
         
-        movieExporter = MovieExporter(myViewcontroller: self);
+        movieExporter = MovieCompositerExporter(myViewcontroller: self);
         
         movieThumbsImageViews = [
             movieThumbImage1!, movieThumbImage2!, movieThumbImage3!, movieThumbImage4!
@@ -172,7 +172,7 @@ class MainScreenViewController: UIViewController {
             waitIndicator.stopAnimating()
         }
     }
-
+    
     
     @IBAction func addVideoSelected(sender: AnyObject) {
         var vc = CameraRollTableViewController();
@@ -183,7 +183,7 @@ class MainScreenViewController: UIViewController {
     @IBAction func clearClipsSelected(sender: AnyObject) {
         clipsModel = ClipModel();
         for index in 0 ... clipsModel.movieCountMax-1 {
-            movieThumbsImages[index] = UIImage(named: "placeholderBlack")! // from image assets
+            movieThumbsImages[index] = UIImage(named: "placeholderBlack") // from image assets
             movieThumbsImageViews[index].image = movieThumbsImages[index];
         }
         videoAddedSinceLastExport = false;
@@ -197,39 +197,32 @@ class MainScreenViewController: UIViewController {
         // sync with exporting
         // enable this button when composiotion are not nil
         switch transitionStyle {
-     //   case transitionStyleEnum.rampInOut:
-            //  movieExporter.
-     //   case transitionStyleEnum.crossFade:
-            // movieExporter
+        case transitionStyleEnum.rampInOut:
+            println("FIXME AVCoreAnimationTool not working with AVPlayer");
+            // movieExporter.compositeVideoRampInOut();
+        case transitionStyleEnum.crossFade:
+            movieExporter.compositeVideoCrossFade();
         case transitionStyleEnum.crossDisolve:
             // FIXME: do a composition after adding a new video!
             movieExporter.compositeVideoCrossFadeOpenGL();
-            moviePlayer.play(avcomposition: self.movieExporter.composition,
-                avvideocomposition: self.movieExporter.videocomposition)
         default:
-            println("FIXME:");
-            //
+            println("FIXME: unsupported transition type, ignoring.");
+            return;
         }
+        moviePlayer.play(avcomposition: self.movieExporter.composition,
+            avvideocomposition: self.movieExporter.videocomposition)
     }
     
     @IBAction func exportMovieSelected(sender: AnyObject) {
         isExporting = true;
-        switch transitionStyle{
-        case transitionStyleEnum.rampInOut:
-            movieExporter.exportVideoRampInOut(applicationDocumentsDirectory())
-        case transitionStyleEnum.crossFade:
-            movieExporter.exportVideoCrossFade(applicationDocumentsDirectory())
-        case transitionStyleEnum.crossDisolve:
-            movieExporter.compositeVideoCrossFadeOpenGL();
-            movieExporter.exportVideoCrossFadeOpenGLAsync(applicationDocumentsDirectory(),
-                whenDone: { () -> Void in
-                    self.isExporting = false;
-                },
-                whenFailed: { () -> Void in
-                    self.isExporting = false;
-                    // FIXME
-            })
-        }
+        movieExporter.exportVideo(applicationDocumentsDirectory(),
+            whenDone: { () -> Void in
+                self.isExporting = false;
+            },
+            whenFailed: { () -> Void in
+                self.isExporting = false;
+                // FIXME
+        })
     }
     
     
