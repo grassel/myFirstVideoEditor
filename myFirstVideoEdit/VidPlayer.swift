@@ -7,8 +7,8 @@ import QuartzCore;
 class VidPlayer: NSObject {
     
     
-    init(parentView : UIView){
-        self.parentView = parentView;
+    init(viewController: VidPlayerController){
+        self.vc = viewController;
         super.init()
         self.instalAVPlayerToViewHierarchie();
     }
@@ -20,21 +20,23 @@ class VidPlayer: NSObject {
     private func instalAVPlayerToViewHierarchie() {
         // see https://developer.apple.com/LIBRARY/ios/documentation/AVFoundation/Reference/AVPlayerLayer_Class/index.html#//apple_ref/occ/cl/AVPlayerLayer
         self.avPlayer = AVPlayer();
-        var parentLayer : CALayer = self.parentView.layer;
+        var parentLayer : CALayer = self.vc.getView().layer
         parentLayer.backgroundColor =  UIColor.orangeColor().CGColor
         
         self.playerLayer = AVPlayerLayer(player: self.avPlayer)
-        playerLayer.frame.origin = CGPoint(x: 0, y: 0)
-        playerLayer.frame.size = CGSize(width: parentLayer.frame.width, height: parentLayer.frame.height)
-        
+        var rect = self.vc.playerRect()
+        playerLayer.frame.origin = rect.origin
+        playerLayer.frame.size = rect.size
         playerLayer.backgroundColor = UIColor.blueColor().CGColor
         
         playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
         parentLayer.addSublayer(playerLayer)
     }
     
-    private func deinstalAVPlayerFromViewHierarchie() {
-        self.playerLayer.removeFromSuperlayer();
+    func deinstalAVPlayerFromViewHierarchie() {
+        self.playerLayer?.removeFromSuperlayer();
+        self.playerLayer = nil;
+        self.avPlayer = nil;
     }
     
     
@@ -99,6 +101,17 @@ class VidPlayer: NSObject {
         unregisterObservers()
     }
 
+    func pausePlaying() {
+        self.avPlayer.pause()
+    }
+    
+    func resumePlaying() {
+        self.avPlayer.play()
+    }
+    
+    func seekPlaying(newTemporalPosition : Float64) {
+        self.avPlayer.seekToTime(CMTimeMakeWithSeconds(newTemporalPosition, 30))
+    }
     
     private func unregisterObservers() {
         var notifCtr = NSNotificationCenter.defaultCenter();
@@ -107,8 +120,9 @@ class VidPlayer: NSObject {
             NSNotificationCenter.defaultCenter().removeObserver(self.avPlayerItem)
             self.avPlayerItem = nil
         }
-        if (self.avPlayer != nil) {
+        if (self.avPlayer != nil && self.avPlayerTimeObserverId != nil) {
             self.avPlayer.removeTimeObserver(self.avPlayerTimeObserverId)
+            self.avPlayerTimeObserverId = nil;
         }
     }
     
@@ -116,11 +130,14 @@ class VidPlayer: NSObject {
     
     private func playerTimeUpdate(time : CMTime) {
         println("playerTimeUpdate \(CMTimeGetSeconds(time))");
+        self.vc.playerTemporalPosition = CMTimeGetSeconds(time);
     }
     
     
     internal func playerItemDidReachEnd(notification : NSNotification!) {
         println("playerItemDidReachEnd, rewining and playing again.");
+        self.vc.looped?()
+        self.vc.playerProgressUpdate?(0.0)
         self.avPlayer.seekToTime(kCMTimeZero)
         self.avPlayer.play()
     }
@@ -131,7 +148,13 @@ class VidPlayer: NSObject {
             if (self.avPlayerItem.status == AVPlayerItemStatus.ReadyToPlay) {
                 // ready to play
                 println("VidPlayer: PlayerItem ready to play");
-                self.avPlayer!.play()
+                self.vc.readyToPlay?(CMTimeGetSeconds(self.avPlayerItem.duration))
+                if self.vc.autoStartOnPlay == true {
+                    self.vc.startedPlaying?()
+                    self.avPlayer!.play()
+                }
+            } else {
+                self.vc.stoppedPlaying?();
             }
         } else {
             println("VidPlayer: observeValueForKeyPath unexpected object / keyPath=\(keyPath)")
@@ -144,7 +167,7 @@ class VidPlayer: NSObject {
     var avPlayer : AVPlayer!
     
     // the UIView that is the parent to this player
-    var parentView : UIView
+    var vc : VidPlayerController!
     
     // the QuarzCore layer containing this player, sublayer of parentView.layer
     private var playerLayer : AVPlayerLayer!

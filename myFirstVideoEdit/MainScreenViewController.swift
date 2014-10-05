@@ -34,13 +34,7 @@ class MainScreenViewController: UIViewController {
     @IBOutlet weak var exportButton: UIBarButtonItem!
     @IBOutlet weak var playButton: UIButton!
     
-    // FIXME: use AVPlayerItem instead of MPMoviePlayer? -
-    // check if AVPlayerItem class can play AVMutableComposition without need to export first.
-    var moviePlayer:VidPlayer!
-    
-    // the AVComposiiton that's  been created and playing in VidPlayer.
-    // FIXME: move this property to VidPlayer
-    var playingComposition : AVComposition!;
+    var vidPlayerViewController : VidPlayerViewController!
     
     // the view model
     var movieThumbsImageViews : [UIImageView] = [UIImageView]();
@@ -140,6 +134,8 @@ class MainScreenViewController: UIViewController {
         movieThumbsImages = [UIImage](count: clipsModel.movieCountMax, repeatedValue: UIImage());
         
         transitionStyle = transitionStyleEnum.crossDisolve
+        
+        vidPlayerViewController = VidPlayerViewController(myView: viewForMovie);
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -148,21 +144,29 @@ class MainScreenViewController: UIViewController {
         updateToolbarButtonStates();
         updateWaitIndicator();
         
-        self.moviePlayer = VidPlayer(parentView: viewForMovie)
+        vidPlayerViewController.autoStartOnPlay = false
+        vidPlayerViewController.viewWillAppear(animated)
     }
     
+     override func viewDidAppear(animated: Bool) {
+        self.generateCompositeVideo();
+    }
     
     override func viewWillDisappear(animated: Bool) {
-        self.moviePlayer.stopPlaying()
-        self.moviePlayer = nil;  // get rid of the VidPlayer object
+        self.vidPlayerViewController.viewWillDisappear(animated)
         super.viewWillDisappear(animated)
     }
+    
+ //   override func viewDidUnload() {
+ //       self.vidPlayerViewController = nil;  // get rid of the VidPlayer object
+ //   }
+    
     
     func updateToolbarButtonStates() {
         addVideoButton.enabled = (!isExporting && clipsModel.movieCount < clipsModel.movieCountMax);
         exportButton.enabled = !isExporting &&  videoAddedSinceLastExport && (clipsModel.movieCount >= 2);
         clearButton.enabled = !isExporting && (clipsModel.movieCount > 0);
-        playButton.enabled = (clipsModel.movieCount >= 2)
+      //  playButton.enabled = (clipsModel.movieCount >= 2)
     }
     
     func updateWaitIndicator() {
@@ -189,28 +193,30 @@ class MainScreenViewController: UIViewController {
         videoAddedSinceLastExport = false;
     }
     
-    /*
-    compositing the movie using AVFoundation
-    and  QuartzCore for fade animations
-    */
-    @IBAction func playButtonSelected(sender: AnyObject) {
+    func generateCompositeVideo() {
         // sync with exporting
         // enable this button when composiotion are not nil
+        
+        if clipsCount < 2 {
+            return;
+        }
+        
         switch transitionStyle {
         case transitionStyleEnum.rampInOut:
             println("FIXME AVCoreAnimationTool not working with AVPlayer");
             // movieExporter.compositeVideoRampInOut();
         case transitionStyleEnum.crossFade:
             movieExporter.compositeVideoCrossFade();
+            self.vidPlayerViewController.play(avcomposition: self.movieExporter.composition,
+                avvideocomposition: self.movieExporter.videocomposition)
         case transitionStyleEnum.crossDisolve:
-            // FIXME: do a composition after adding a new video!
             movieExporter.compositeVideoCrossFadeOpenGL();
+            self.vidPlayerViewController.play(avcomposition: self.movieExporter.composition,
+                avvideocomposition: self.movieExporter.videocomposition)
         default:
             println("FIXME: unsupported transition type, ignoring.");
             return;
         }
-        moviePlayer.play(avcomposition: self.movieExporter.composition,
-            avvideocomposition: self.movieExporter.videocomposition)
     }
     
     @IBAction func exportMovieSelected(sender: AnyObject) {
@@ -227,12 +233,7 @@ class MainScreenViewController: UIViewController {
     
     
     func playMovie(composition : AVComposition, videocomposition : AVVideoComposition) {
-        if (self.playingComposition != nil) {
-            self.moviePlayer.stopPlaying()
-        }
-        
-        self.playingComposition = composition;
-        self.moviePlayer.play(avcomposition: self.playingComposition, avvideocomposition: videocomposition)
+        self.vidPlayerViewController.play(avcomposition: composition, avvideocomposition: videocomposition)
     }
     
     func applicationDocumentsDirectory() -> String {

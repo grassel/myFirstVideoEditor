@@ -101,7 +101,7 @@ class CameraRollTableViewController: UITableViewController, CameraModelDelegate 
         // Get the new view controller using [segue destinationViewController].
         // Pass the selected object to the new view controller.
         if (segue.identifier == "playVideoSegue") {
-            var vc  : VidPlayerViewController! = segue.destinationViewController as? VidPlayerViewController
+            var vc  : ClipSelectionViewController! = segue.destinationViewController as? ClipSelectionViewController
             var row : Int! = self.tableView.indexPathForSelectedRow()?.row;
             vc?.playingAsset = self.cameraRollModel.cameraRollVideosFetchResults[row!] as PHAsset;
         }
