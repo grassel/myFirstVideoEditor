@@ -35,7 +35,7 @@ class VidPlayerViewController: UIViewController, VidPlayerController {
         self.vidPlayer = VidPlayer(viewController: self)
         
         self.playButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
-         self.playButton.frame = CGRect(x: 5, y: self.view.frame.height-30, width: 50, height: 30);
+         self.playButton.frame = CGRect(x: 5, y: self.view.frame.height-50, width: 50, height: 30);
      //   playButton.imageView?.image = UIImage(named: "PlayButtonImage")
      //   playButton.setBackgroundImage(UIImage(named: "PlayButtonImage"), forState: UIControlState.Normal)
      //   playButton.setBackgroundImage(UIImage(named: "PlayButtonImage"), forState: UIControlState.Disabled)
@@ -44,7 +44,7 @@ class VidPlayerViewController: UIViewController, VidPlayerController {
         playButton.enabled = false;
         playButton.addTarget(self, action: Selector("buttonTouchUpInside:"), forControlEvents: UIControlEvents.TouchUpInside)
         
-        self.videoTemporalPositionSlider = UISlider(frame: CGRect(x: 70, y: self.view.frame.height-30, width: self.view.frame.width-70, height: 30));
+        self.videoTemporalPositionSlider = UISlider(frame: CGRect(x: 70, y: self.view.frame.height-50, width: self.view.frame.width-70, height: 30));
         videoTemporalPositionSlider.maximumValue = 100;
         videoTemporalPositionSlider.minimumValue = 0;
         videoTemporalPositionSlider.continuous = true;

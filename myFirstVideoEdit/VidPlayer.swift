@@ -21,13 +21,13 @@ class VidPlayer: NSObject {
         // see https://developer.apple.com/LIBRARY/ios/documentation/AVFoundation/Reference/AVPlayerLayer_Class/index.html#//apple_ref/occ/cl/AVPlayerLayer
         self.avPlayer = AVPlayer();
         var parentLayer : CALayer = self.vc.getView().layer
-        parentLayer.backgroundColor =  UIColor.orangeColor().CGColor
+        parentLayer.backgroundColor =  UIColor.blackColor().CGColor
         
         self.playerLayer = AVPlayerLayer(player: self.avPlayer)
         var rect = self.vc.playerRect()
         playerLayer.frame.origin = rect.origin
         playerLayer.frame.size = rect.size
-        playerLayer.backgroundColor = UIColor.blueColor().CGColor
+        playerLayer.backgroundColor = UIColor.blackColor().CGColor
         
         playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
         parentLayer.addSublayer(playerLayer)
